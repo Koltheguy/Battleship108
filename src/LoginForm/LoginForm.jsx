@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import {
+	RegExpMatcher,
+	englishDataset,
+	englishRecommendedTransformers,
+} from "obscenity";
+import {
 	getAuth,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -7,16 +12,10 @@ import {
 	signInWithPopup,
 } from "firebase/auth";
 
-const generateSalt = (length) => {
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	let salt = "";
-	for (let i = 0; i < length; i++) {
-		const randomIndex = Math.floor(Math.random() * characters.length);
-		salt += characters.charAt(randomIndex);
-	}
-	return salt;
-};
+const obscenityMatcher = new RegExpMatcher({
+	...englishDataset.build(),
+	...englishRecommendedTransformers,
+});
 
 const LoginForm = () => {
 	const provider = new GoogleAuthProvider();
@@ -36,6 +35,20 @@ const LoginForm = () => {
 		event.preventDefault();
 		const buttonType = event.nativeEvent.submitter.name;
 		if (email && password) {
+			if (obscenityMatcher.hasMatch(email)) {
+				alert(
+					`Sorry, your email is considered profane by a filter, please use a different email.\n` +
+						`Word(s) found: ${obscenityMatcher
+							.getAllMatches(email)
+							.map(
+								(match) =>
+									englishDataset.getPayloadWithPhraseMetadata(
+										match
+									).phraseMetadata.originalWord
+							)
+							.join(" , ")}`
+				);
+			}
 			if (buttonType === "login")
 				signInWithEmailAndPassword(auth, email, password);
 			else if (buttonType === "signup")
