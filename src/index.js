@@ -1,7 +1,15 @@
 //import firebase from "firebase/compat/app";
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 import React from "react";
-import { createRoot } from "react-dom";
-import { FirebaseAppProvider } from "reactfire";
+import { createRoot } from "react-dom/client";
+import {
+	FirebaseAppProvider,
+	DatabaseProvider,
+	AuthProvider,
+	useFirebaseApp,
+} from "reactfire";
+
 import App from "./App";
 
 const firebaseConfig = {
@@ -19,8 +27,21 @@ const firebaseConfig = {
 function FirebaseWrapper() {
 	return (
 		<FirebaseAppProvider firebaseConfig={firebaseConfig}>
-			<App />
+			<FirebaseComponents />
 		</FirebaseAppProvider>
+	);
+}
+
+function FirebaseComponents({ children }) {
+	const app = useFirebaseApp();
+	const database = getDatabase(app);
+	const auth = getAuth(app);
+	return (
+		<AuthProvider sdk={auth}>
+			<DatabaseProvider sdk={database}>
+				<App />
+			</DatabaseProvider>
+		</AuthProvider>
 	);
 }
 

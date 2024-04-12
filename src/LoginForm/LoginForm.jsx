@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { sha256 } from "crypto-hash";
+import {
+	getAuth,
+	signInWithEmailAndPassword,
+	createUserWithEmailAndPassword,
+	GoogleAuthProvider,
+	signInWithPopup,
+} from "firebase/auth";
 
 const generateSalt = (length) => {
 	const characters =
@@ -13,12 +19,13 @@ const generateSalt = (length) => {
 };
 
 const LoginForm = () => {
-	const [username, setUsername] = useState("");
+	const provider = new GoogleAuthProvider();
+	const auth = getAuth();
+	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [loggedIn, setLoggedIn] = useState(false);
 
 	const handleUsernameChange = (event) => {
-		setUsername(event.target.value);
+		setEmail(event.target.value);
 	};
 
 	const handlePasswordChange = (event) => {
@@ -27,43 +34,50 @@ const LoginForm = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const salt = generateSalt(15);
-		const hashedPassword = await sha256(password + salt);
-		if (username && password) {
-			setLoggedIn(true);
-			alert(`password hash ${hashedPassword}`);
+		const buttonType = event.nativeEvent.submitter.name;
+		if (email && password) {
+			if (buttonType === "login")
+				signInWithEmailAndPassword(auth, email, password);
+			else if (buttonType === "signup")
+				createUserWithEmailAndPassword(auth, email, password);
 		} else {
 			alert("Username and password are required!");
 		}
 	};
 
+	const googleAuthPopup = () => {
+		signInWithPopup(auth, provider);
+	};
+
 	return (
 		<div>
-			{loggedIn ? (
-				<h1>Welcome, {username}!</h1>
-			) : (
-				<form onSubmit={handleSubmit}>
-					<div>
-						<label htmlFor="username">Username:</label>
-						<input
-							type="text"
-							id="username"
-							value={username}
-							onChange={handleUsernameChange}
-						/>
-					</div>
-					<div>
-						<label htmlFor="password">Password:</label>
-						<input
-							type="password"
-							id="password"
-							value={password}
-							onChange={handlePasswordChange}
-						/>
-					</div>
-					<button type="submit">Login</button>
-				</form>
-			)}
+			<form onSubmit={handleSubmit}>
+				<div>
+					<label htmlFor="email">Email:</label>
+					<input
+						type="text"
+						id="email"
+						value={email}
+						onChange={handleUsernameChange}
+					/>
+				</div>
+				<div>
+					<label htmlFor="password">Password:</label>
+					<input
+						type="password"
+						id="password"
+						value={password}
+						onChange={handlePasswordChange}
+					/>
+				</div>
+				<button type="submit" name="login">
+					Login
+				</button>
+				<button type="submit" name="signup">
+					Sign up
+				</button>
+			</form>
+			<button onClick={googleAuthPopup}>Sign in with Google</button>
 		</div>
 	);
 };
