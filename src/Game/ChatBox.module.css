@@ -1,0 +1,25 @@
+.chatBox {
+    width: 700px;
+    height: 500px;
+    border: 5px solid black;
+    margin-left: 55%;
+    margin-top: -520px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chatHeader {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .chatHeader h2 {
+    margin: 0;
+  }
+  
+  .chatBody {
+    padding: 10px;
+  }
+  
