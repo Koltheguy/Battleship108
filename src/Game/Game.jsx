@@ -6,11 +6,16 @@ import {
 	englishRecommendedTransformers,
 } from "obscenity";
 
-import styles from "./Game.module.css";
+import styles from "./Grid.module.css";
+import style from "./ChatBox.module.css";
 import Grid from "./Grid";
+import ChatBox from "./ChatBox";
 
 const Game = () => {
-	return <Grid></Grid>;
+	return <div>
+		<Grid />
+		<ChatBox />
+	</div>;
 };
 
 export default Game;
