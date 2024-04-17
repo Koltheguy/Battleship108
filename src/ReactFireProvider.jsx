@@ -21,7 +21,10 @@ export const ReactFireStoreContext = React.createContext();
 const auth = getAuth();
 
 export default function ReactFireStoreProvider(props) {
-	const { displayName, uid } = useUser();
+	const {
+		status,
+		data: { displayName, uid },
+	} = useUser();
 	const UserCollection = useFirestore().collection("User");
 	const User = useFirestoreCollectionData(UserCollection);
 	const GameCollection = useFirestore().collection("Game");
