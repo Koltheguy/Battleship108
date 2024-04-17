@@ -12,7 +12,7 @@ body {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
-    margin-left: 500px;
+    margin-left: 100px;
     font-weight: bold;
     text-transform: uppercase;
     border: none;
@@ -21,7 +21,7 @@ body {
   }
   
   .primary {
-    background-color: #007bff;
+    background-color: rgb(238, 14, 14);
     color: #fff;
   }
   
@@ -30,8 +30,7 @@ body {
   }
   
   .secondary {
-    background-color: #6c757d;
-    color: #fff;
+    background-color: #ff000f
   }
   
   .secondary:hover {
