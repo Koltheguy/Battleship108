@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { collection, query } from "firebase/firestore";
+// import { collection, query } from "firebase/firestore";
 import { getAuth, updateProfile } from "firebase/auth";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+// import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import { useUser } from "reactfire";
 import {
 	uniqueNamesGenerator,
 	adjectives,
@@ -31,18 +32,19 @@ export default function ReactFireStoreProvider(props) {
 	let displayName, uid;
 	if (status !== "loading") {
 		({ displayName, uid } = data);
+		console.debug(uid);
 	}
 
 	const [refresh, setRefresh] = useState(true);
 
-	const firestore = useFirestore();
-	const UserCollection = collection(firestore, "User");
-	const UserQuery = query(UserCollection);
-	const { data: User } = useFirestoreCollectionData(UserQuery);
-	const GameCollection = collection(firestore, "Game");
-	const Game = useFirestoreCollectionData(GameCollection);
-	const ChatCollection = collection(firestore, "Chat");
-	const Chat = useFirestoreCollectionData(ChatCollection);
+	// const firestore = useFirestore();
+	// const UserCollection = collection(firestore, "User");
+	// const UserQuery = query(UserCollection);
+	// const { data: User } = useFirestoreCollectionData(UserQuery);
+	// const GameCollection = collection(firestore, "Game");
+	// const Game = useFirestoreCollectionData(GameCollection);
+	// const ChatCollection = collection(firestore, "Chat");
+	// const Chat = useFirestoreCollectionData(ChatCollection);
 
 	const changeUserName = async (name) => {
 		const matches = obscenityMatcher.getAllMatches(name);

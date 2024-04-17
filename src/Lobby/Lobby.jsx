@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getAuth, signOut, updateProfile } from "firebase/auth";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { getAuth, signOut } from "firebase/auth";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import styles from "./Lobby.module.css";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useUser } from "reactfire";
+// import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ReactFireStoreContext } from "../ReactFireProvider";
 
 const Lobby = () => {
@@ -13,9 +12,7 @@ const Lobby = () => {
 		signOut(auth);
 	};
 
-	const { displayName, uid, changeUserName } = useContext(
-		ReactFireStoreContext
-	);
+	const { displayName, changeUserName } = useContext(ReactFireStoreContext);
 
 	const [username, setUsername] = useState(displayName);
 

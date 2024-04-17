@@ -1,4 +1,4 @@
-import firebase from "firebase/compat/app";
+// import firebase from "firebase/compat/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import React from "react";
