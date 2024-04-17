@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./Game.module.css";
+import styles from "./Grid.module.css";
 
 const Grid = () => {
   const [gridData, setGridData] = useState(Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0)));
