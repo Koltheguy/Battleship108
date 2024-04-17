@@ -22,6 +22,7 @@
 	},
 	"scripts": {
 		"start": "react-scripts start",
+		"build": "react-scripts build",
 		"serve": "react-scripts build && firebase serve",
 		"deploy": "react-scripts build && firebase deploy",
 		"pre": "react-scripts build && firebase hosting:channel:deploy prerelease",
