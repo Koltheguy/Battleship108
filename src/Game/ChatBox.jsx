@@ -5,7 +5,7 @@ const ChatBox = () => {
   return (
     <div className={styles.chatBox}>
       <div className={styles.chatHeader}>
-        <h2>Chat Box</h2>
+        <h2>Chat:</h2>
       </div>
       <div className={styles.chatBody}>
         {/* Content of the chat box */}
