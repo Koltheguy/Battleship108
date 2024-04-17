@@ -1,0 +1,49 @@
+.grid {
+    display: flex;
+    justify-content: center;
+    margin-right: 60%;
+    width: 50%;
+    align-items: center;
+    color: black;
+    padding: 10px;
+  }
+  
+  table {
+    border-collapse: collapse;
+  }
+
+  .emptycell {
+    border: none;
+  }
+
+  .coordNums {
+    color: blue;
+    border: none;
+  }
+
+  .coordLetters {
+    color: blue;
+    border: none;
+    justify-content: space-between;
+    
+  }
+  .coordLetters > div {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+  }
+  
+  
+  th, td {
+    border: 1px solid black;
+    padding: 10px;
+    height: 50px;
+    width: 500px;
+    text-align: center;
+  }
+  
+  .cell {
+    cursor: pointer;
+  }
