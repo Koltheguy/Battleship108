@@ -1,4 +1,5 @@
 import React from "react";
+import { collection, query } from "firebase/firestore";
 import { getAuth, updateProfile } from "firebase/auth";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 
@@ -18,18 +19,22 @@ const censor = new TextCensor().setStrategy(xStrategy);
 
 export const ReactFireStoreContext = React.createContext();
 
-const auth = getAuth();
-
 export default function ReactFireStoreProvider(props) {
-	const {
-		status,
-		data: { displayName, uid },
-	} = useUser();
-	const UserCollection = useFirestore().collection("User");
-	const User = useFirestoreCollectionData(UserCollection);
-	const GameCollection = useFirestore().collection("Game");
+	const auth = getAuth();
+	const { status, data } = useUser();
+	let displayName, uid;
+	if (status !== "loading") {
+		({ displayName, uid } = data);
+		console.log(displayName);
+	}
+
+	const firestore = useFirestore();
+	const UserCollection = collection(firestore, "User");
+	const UserQuery = query(UserCollection);
+	const { data: User } = useFirestoreCollectionData(UserQuery);
+	const GameCollection = collection(firestore, "Game");
 	const Game = useFirestoreCollectionData(GameCollection);
-	const ChatCollection = useFirestore().collection("Chat");
+	const ChatCollection = collection(firestore, "Chat");
 	const Chat = useFirestoreCollectionData(ChatCollection);
 
 	const changeUserName = async (name) => {

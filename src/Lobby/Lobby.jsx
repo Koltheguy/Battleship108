@@ -5,7 +5,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import styles from "./Lobby.module.css";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "reactfire";
-//import { ReactFireStoreContext } from "../ReactFireProvider";
+import { ReactFireStoreContext } from "../ReactFireProvider";
 
 const Lobby = () => {
 	const auth = getAuth();
@@ -13,24 +13,28 @@ const Lobby = () => {
 		signOut(auth);
 	};
 
-	// const { displayName, uid, changeUserName } = useContext(
-	// 	ReactFireStoreContext
-	// );
+	const { displayName, uid, changeUserName } = useContext(
+		ReactFireStoreContext
+	);
 
-	// const [username, setUsername] = useState(displayName);
-	const [username, setUsername] = useState("");
+	const [username, setUsername] = useState(displayName);
+
+	useEffect(() => {
+		setUsername(displayName);
+	}, [displayName]);
 
 	// debounce username change
 	useEffect(() => {
 		const debounceUsernameChange = setTimeout(() => {
-			// changeUserName(username);
+			changeUserName(username);
 		}, 1500);
 
 		return () => clearTimeout(debounceUsernameChange);
-	}, [username]);
+	}, [username, changeUserName]);
 
 	const handleUsernameChange = async (event) => {
-		await setUsername(event.target.value);
+		// allows only alphanumeric inputs
+		await setUsername(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
 	};
 
 	// Example data for the table
@@ -43,6 +47,8 @@ const Lobby = () => {
 	return (
 		<div>
 			<h1>Battleship</h1>
+			username:{username}
+			<br />
 			<input
 				type="text"
 				id="username"

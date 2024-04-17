@@ -1,8 +1,8 @@
 import React from "react";
 import LoginForm from "./LoginForm/LoginForm";
 import Lobby from "./Lobby/Lobby";
-//import ReactFireProvider from "./ReactFireProvider";
 import { useSigninCheck } from "reactfire";
+import ReactFireProvider from "./ReactFireProvider";
 
 export default function App() {
 	const { status, data: signInCheckResult } = useSigninCheck();
@@ -14,7 +14,11 @@ export default function App() {
 	console.log(signInCheckResult);
 
 	if (signInCheckResult.signedIn === true) {
-		return <Lobby />;
+		return (
+			<ReactFireProvider>
+				<Lobby />
+			</ReactFireProvider>
+		);
 	} else {
 		return <LoginForm />;
 	}
