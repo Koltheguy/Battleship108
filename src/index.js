@@ -1,13 +1,13 @@
-//import firebase from "firebase/compat/app";
+import firebase from "firebase/compat/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import {
-	FirebaseAppProvider,
-	DatabaseProvider,
-	AuthProvider,
 	useFirebaseApp,
+	FirebaseAppProvider,
+	FirestoreProvider,
+	AuthProvider,
 	SuspenseWithPerf,
 } from "reactfire";
 
@@ -40,13 +40,14 @@ function FirebaseWrapper() {
 
 function FirebaseComponents({ children }) {
 	const app = useFirebaseApp();
-	const database = getDatabase(app);
 	const auth = getAuth(app);
+	const db = getFirestore(app);
+
 	return (
 		<AuthProvider sdk={auth}>
-			<DatabaseProvider sdk={database}>
+			<FirestoreProvider sdk={db}>
 				<App />
-			</DatabaseProvider>
+			</FirestoreProvider>
 		</AuthProvider>
 	);
 }
