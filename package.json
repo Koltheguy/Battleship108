@@ -17,6 +17,7 @@
 		"react-dom": "^18.2.0",
 		"react-scripts": "5.0.1",
 		"reactfire": "^4.2.3",
+		"unique-names-generator": "^4.7.1",
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
