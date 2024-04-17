@@ -8,6 +8,7 @@ import {
 	DatabaseProvider,
 	AuthProvider,
 	useFirebaseApp,
+	SuspenseWithPerf,
 } from "reactfire";
 
 import App from "./App";
@@ -27,7 +28,12 @@ const firebaseConfig = {
 function FirebaseWrapper() {
 	return (
 		<FirebaseAppProvider firebaseConfig={firebaseConfig}>
-			<FirebaseComponents />
+			<SuspenseWithPerf
+				fallback={<p>Loading...</p>}
+				traceId={"loading-app-status"}
+			>
+				<FirebaseComponents />
+			</SuspenseWithPerf>
 		</FirebaseAppProvider>
 	);
 }

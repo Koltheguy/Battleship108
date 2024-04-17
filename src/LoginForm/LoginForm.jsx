@@ -26,7 +26,7 @@ const LoginForm = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const handleUsernameChange = (event) => {
+	const handleEmailChange = (event) => {
 		setEmail(event.target.value);
 	};
 
@@ -54,16 +54,16 @@ const LoginForm = () => {
 				);
 				return;
 			} else if (buttonType === "login")
-				signInWithEmailAndPassword(auth, email, password);
+				await signInWithEmailAndPassword(auth, email, password);
 			else if (buttonType === "signup")
-				createUserWithEmailAndPassword(auth, email, password);
+				await createUserWithEmailAndPassword(auth, email, password);
 		} else {
 			alert("Username and password are required!");
 		}
 	};
 
-	const googleAuthPopup = () => {
-		signInWithPopup(auth, provider);
+	const googleAuthPopup = async () => {
+		await signInWithPopup(auth, provider);
 	};
 
 	return (
@@ -82,7 +82,7 @@ const LoginForm = () => {
 						id="email"
 						placeholder="Email"
 						value={email}
-						onChange={handleUsernameChange}
+						onChange={handleEmailChange}
 						className={styles.input}
 					/>
 				</div>
