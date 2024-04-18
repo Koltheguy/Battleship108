@@ -43,8 +43,8 @@ const Lobby = () => {
 
 	return (
 		<div>
-			<h1>Battleship</h1>
-			username:{username}
+			{/* <h1>Battleship</h1> */}
+			{/* username:{username}
 			<br />
 			<input
 				type="text"
@@ -52,8 +52,21 @@ const Lobby = () => {
 				placeholder="Username"
 				value={username}
 				onChange={handleUsernameChange}
-			/>
-			<button className={`${styles.pureMaterial} ${styles.newGame}`}>
+			/> */}
+			{/* username:{username} */}
+			<div className={styles.user}>
+				username: {username}
+				<br />
+				<input className={styles.input}
+					type="text"
+					id="username"
+					placeholder="Username"
+					value={username}
+					onChange={handleUsernameChange}
+				/>
+			</div>
+			<h1>Battleship</h1>
+			{/* <button className={`${styles.pureMaterial} ${styles.newGame}`}>
 				New Game
 			</button>
 			<button
@@ -61,7 +74,18 @@ const Lobby = () => {
 				onClick={handleSignout}
 			>
 				Sign out
-			</button>
+			</button> */}
+			<div className={styles.button}>
+				<button className={`${styles.pureMaterial} ${styles.newGame}`}>
+					New Game
+				</button>
+				<button
+					className={`${styles.pureMaterial} ${styles.signOut}`}
+					onClick={handleSignout}
+				>
+					Sign out
+				</button>
+			</div>
 			{/* <h2>Games</h2> */}
 			<table>
 				<thead>
