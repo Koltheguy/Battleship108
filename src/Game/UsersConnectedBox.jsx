@@ -8,7 +8,7 @@ const UsersConnectedBox = () => {
         <h2>Players in Lobby</h2>
       </div>
       <div className={styles.usersBody}>
-        {/* Content of the chat box */}
+        {/* Content of the users box */}
       </div>
     </div>
   );
