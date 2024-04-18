@@ -1,7 +1,8 @@
 .chatBox {
     width: 700px;
     height: 500px;
-    border: 5px solid black;
+    border: 5px solid #1eb980;
+    color: white;
     margin-left: 55%;
     margin-top: -520px;
     border-radius: 5px;
@@ -10,9 +11,9 @@
   }
   
   .chatHeader {
-    background-color: #f0f0f0;
+    background-color: #106e4b;
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px #106e4b;
   }
   
   .chatHeader h2 {
