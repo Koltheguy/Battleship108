@@ -19,7 +19,7 @@ const ResignButton = ({ onClick }) => {
         },
       }}
     >
-      Resign
+      Forfeit
     </Button>
   );
 };
