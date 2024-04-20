@@ -5,6 +5,7 @@ import { getAuth, signOut } from "firebase/auth";
 import styles from "./Lobby.module.css";
 // import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ReactFireStoreContext } from "../ReactFireProvider";
+import Game from "../Game/Game";
 
 const Lobby = () => {
 	const auth = getAuth();
@@ -46,7 +47,8 @@ const Lobby = () => {
 			<div className={styles.user}>
 				username: {username}
 				<br />
-				<input className={styles.input}
+				<input
+					className={styles.input}
 					type="text"
 					id="username"
 					placeholder="Username"
@@ -91,6 +93,7 @@ const Lobby = () => {
 					))}
 				</tbody>
 			</table>
+			<Game />
 		</div>
 	);
 };
