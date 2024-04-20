@@ -13,9 +13,9 @@ const ResignButton = ({ onClick }) => {
         width: "386px",
         height: "190px",
         fontSize: "80px",
-        backgroundColor: "blue",
+        backgroundColor: "#1eb980",
         "&:hover": {
-          backgroundColor: "blue",
+          backgroundColor: "#1eb980",
         },
       }}
     >
