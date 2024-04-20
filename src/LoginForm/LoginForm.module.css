@@ -1,4 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: hsl(0, 0%, 96%);
+    width: 100%;
+    overflow-x: hidden;
+}
+
 .container {
     font-family: 'Roboto', sans-serif;
     display: flex;
@@ -30,7 +38,8 @@
 
 .textLarge {
     font-weight: 600;
-    color: var(--color-black);
+    /* color: var(--color-black); */
+    color: black;
 }
 
 .inputGroup {
