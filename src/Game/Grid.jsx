@@ -27,8 +27,7 @@ const Grid = () => {
                 <td
                   key={colIndex}
                   className={`${styles.cell} ${colIndex === 0 ? styles.firstColumn : ''}`}
-                  onClick={() => updateGrid(rowIndex, colIndex)}
-                >
+                  onClick={() => updateGrid(rowIndex, colIndex)}>
                   {cell}
                 </td>
               ))}
