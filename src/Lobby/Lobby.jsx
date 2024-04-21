@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import { getAuth, signOut } from "firebase/auth";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import React, { useState, useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Lobby.module.css";
-// import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { ReactFireStoreContext } from "../ReactFireProvider";
+import { auth, changeUserName } from "../firebase";
 import Game from "../Game/Game";
 
 const Lobby = () => {
-	const auth = getAuth();
+	const [refresh, setRefresh] = useState(true);
+
+	const [user] = useAuthState(auth);
+	const { displayName } = user;
+
 	const handleSignout = (event) => {
 		signOut(auth);
 	};
-
-	const { displayName, changeUserName } = useContext(ReactFireStoreContext);
 
 	const [username, setUsername] = useState(displayName);
 
@@ -24,11 +24,13 @@ const Lobby = () => {
 	// debounce username change
 	useEffect(() => {
 		const debounceUsernameChange = setTimeout(() => {
-			changeUserName(username);
+			changeUserName(username).then(() => {
+				setRefresh(!refresh); // force update page
+			});
 		}, 1500);
 
 		return () => clearTimeout(debounceUsernameChange);
-	}, [username, changeUserName]);
+	}, [username, setRefresh, refresh]);
 
 	const handleUsernameChange = async (event) => {
 		// allows only alphanumeric inputs
