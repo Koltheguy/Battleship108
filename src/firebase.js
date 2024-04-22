@@ -41,7 +41,7 @@ const changeUserName = async (name) => {
 	const matches = obscenityMatcher.getAllMatches(name);
 	let cleanedName = censor.applyTo(name, matches);
 
-	if (!cleanedName || cleanedName.length < 3) {
+	if (!cleanedName || cleanedName.length < 3 || cleanedName.length > 21) {
 		cleanedName = uniqueNamesGenerator({
 			dictionaries: [adjectives, colors, animals],
 			separator: "",
@@ -49,15 +49,15 @@ const changeUserName = async (name) => {
 			seed: Date.now(),
 		});
 	}
-	console.log("change", cleanedName);
+	console.info("name change", cleanedName);
 
 	await updateProfile(auth.currentUser, {
 		displayName: cleanedName,
 	}).then(() => cleanedName);
 };
 
-const joinGame = async () => {};
 const newGame = async () => {};
+const joinGame = async () => {};
 const resign = async () => {};
 const placeShip = async () => {};
 const attack = async () => {};

@@ -3,13 +3,18 @@ import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Lobby.module.css";
 import { auth, changeUserName } from "../firebase";
-import Game from "../Game/Game";
+import NewGame from "./NewGame";
 
 const Lobby = () => {
 	const [refresh, setRefresh] = useState(true);
 
 	const [user] = useAuthState(auth);
 	const { displayName } = user;
+
+	const [isNewGame, setIsNewGame] = useState(false);
+	const toggleNewGamePage = () => {
+		setIsNewGame(!isNewGame);
+	};
 
 	const handleSignout = (event) => {
 		signOut(auth);
@@ -23,14 +28,17 @@ const Lobby = () => {
 
 	// debounce username change
 	useEffect(() => {
-		const debounceUsernameChange = setTimeout(() => {
-			changeUserName(username).then(() => {
-				setRefresh(!refresh); // force update page
-			});
-		}, 1500);
+		let debounceUsernameChange;
+		if (username !== displayName) {
+			debounceUsernameChange = setTimeout(() => {
+				changeUserName(username).then(() => {
+					setRefresh(!refresh); // force update page
+				});
+			}, 1500);
+		}
 
 		return () => clearTimeout(debounceUsernameChange);
-	}, [username, setRefresh, refresh]);
+	}, [username, displayName, setRefresh, refresh]);
 
 	const handleUsernameChange = async (event) => {
 		// allows only alphanumeric inputs
@@ -44,60 +52,65 @@ const Lobby = () => {
 		{ game: 3, name: "Charlie", status: "Waiting for players" },
 	];
 
-	return (
-		<div className={styles.body}>
-			<div className={styles.user}>
-				username: {username}
-				<br />
-				<input
-					className={styles.input}
-					type="text"
-					id="username"
-					placeholder="Username"
-					value={username}
-					onChange={handleUsernameChange}
-				/>
-			</div>
-			<h1 className={styles.header}>Battleship</h1>
-			<div className={styles.button}>
-				<button className={`${styles.pureMaterial} ${styles.newGame}`}>
-					New Game
-				</button>
-				<button
-					className={`${styles.pureMaterial} ${styles.signOut}`}
-					onClick={handleSignout}
-				>
-					Sign out
-				</button>
-			</div>
-			<table>
-				<thead>
-					<tr>
-						<th>Game</th>
-						<th>Created by</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{tableData.map((item) => (
-						<tr key={item.id}>
-							<td>{item.game}</td>
-							<td>{item.name}</td>
-							<td>{item.status}</td>
-							<td>
-								<button
-									className={`${styles.pureMaterial} ${styles.join}`}
-								>
-									Join
-								</button>
-							</td>
+	if (isNewGame) {
+		return <NewGame toggleNewGamePage={toggleNewGamePage} />;
+	} else
+		return (
+			<div className={styles.body}>
+				<div className={styles.user}>
+					username: {username}
+					<br />
+					<input
+						className={styles.input}
+						type="text"
+						id="username"
+						placeholder="Username"
+						value={username}
+						onChange={handleUsernameChange}
+					/>
+				</div>
+				<h1 className={styles.header}>Battleship</h1>
+				<div className={styles.button}>
+					<button
+						className={`${styles.pureMaterial} ${styles.newGame}`}
+						onClick={toggleNewGamePage}
+					>
+						New Game
+					</button>
+					<button
+						className={`${styles.pureMaterial} ${styles.signOut}`}
+						onClick={handleSignout}
+					>
+						Sign out
+					</button>
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th>Game</th>
+							<th>Created by</th>
+							<th>Status</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
-			<Game />
-		</div>
-	);
+					</thead>
+					<tbody>
+						{tableData.map((item) => (
+							<tr key={item.id}>
+								<td>{item.game}</td>
+								<td>{item.name}</td>
+								<td>{item.status}</td>
+								<td>
+									<button
+										className={`${styles.pureMaterial} ${styles.join}`}
+									>
+										Join
+									</button>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		);
 };
 
 export default Lobby;
