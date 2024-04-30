@@ -1,6 +1,6 @@
 import firebase from "firebase/compat/app";
 import { getAuth, updateProfile } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import {
 	uniqueNamesGenerator,
 	adjectives,
@@ -27,7 +27,7 @@ const app = firebase.initializeApp({
 	measurementId: "G-WB23V65S09",
 });
 const auth = getAuth(app);
-const firestore = getFirestore(app);
+const db = getFirestore(app);
 
 const obscenityMatcher = new RegExpMatcher({
 	...englishDataset.build(),
@@ -56,17 +56,27 @@ const changeUserName = async (name) => {
 	}).then(() => cleanedName);
 };
 
-const newGame = async () => {};
-const joinGame = async () => {};
-const resign = async () => {};
-const placeShip = async () => {};
-const attack = async () => {};
-const view = async () => {};
-const sendMessage = async () => {};
+const initializeUser = (user) => {
+	console.log(user);
+	setDoc(doc(db, "User", user.uid), {
+		wins: 0,
+		loses: 0,
+		gamesPlayed: 0,
+	});
+};
+
+const newGame = async (user) => {};
+const joinGame = async (user) => {};
+const resign = async (user) => {};
+const placeShip = async (user) => {};
+const attack = async (user) => {};
+const view = async (user) => {};
+const sendMessage = async (user) => {};
 
 export {
 	auth,
-	firestore,
+	db,
+	initializeUser,
 	changeUserName,
 	joinGame,
 	newGame,

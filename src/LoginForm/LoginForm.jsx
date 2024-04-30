@@ -14,6 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import styles from "./LoginForm.module.css";
+import { initializeUser } from "../firebase";
 
 const obscenityMatcher = new RegExpMatcher({
 	...englishDataset.build(),
@@ -54,16 +55,31 @@ const LoginForm = () => {
 				);
 				return;
 			} else if (buttonType === "login")
-				await signInWithEmailAndPassword(auth, email, password);
+				await signInWithEmailAndPassword(auth, email, password).then(
+					({ user }) => {
+						console.log(user);
+						initializeUser(user);
+					}
+				);
 			else if (buttonType === "signup")
-				await createUserWithEmailAndPassword(auth, email, password);
+				await createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				).then(({ user }) => {
+					console.log(user);
+					initializeUser(user);
+				});
 		} else {
 			alert("Username and password are required!");
 		}
 	};
 
 	const googleAuthPopup = async () => {
-		await signInWithPopup(auth, provider);
+		await signInWithPopup(auth, provider).then(({ user }) => {
+			console.log(user);
+			initializeUser(user);
+		});
 	};
 
 	return (
