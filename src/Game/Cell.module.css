@@ -4,9 +4,9 @@
     display: flex; /* Use flexbox to ensure proper layout */
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
-    border: 1px solid #1eb980;
+    /* border: 1px solid #1eb980; */
     width: 100%; /* Ensure the div takes full width of the parent td */
-    height: 100%; /* Ensure the div takes full height of the parent td */
+    height:100%; /* Ensure the div takes full height of the parent td */
   }
   
   .clicked {

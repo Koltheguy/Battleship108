@@ -1,49 +1,51 @@
 .grid {
-    display: flex;
-    justify-content: center;
-    margin-right: 60%;
-    width: 50%;
-    align-items: center;
-    color: black;
-    padding: 10px;
-  }
-  
-  table {
-    border-collapse: collapse;
-  }
+  display: flex;
+  justify-content: center;
+  margin-top: 500px;
+  margin-right: 60%;
+  width: 50%;
+  height: 50%;
+  align-items: center;
+  color: black;
+  padding: 10px;
+}
 
-  .emptycell {
-    border: none;
-  }
+table {
+  border-collapse: collapse;
+}
 
-  .coordNums {
-    color: #1eb980;
-    border: none;
-  }
+.emptycell {
+  border: none;
+}
 
-  .coordLetters {
-    color: #1eb980;
-    border: none;
-    justify-content: space-between;
-    
-  }
-  .coordLetters > div {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-  }
+.coordNums {
+  color: #1eb980;
+  border: none;
+}
+
+.coordLetters {
+  color: #1eb980;
+  border: none;
+  justify-content: space-between;
   
-  
-  th, td {
-    border: 1px solid #1eb980;
-    padding: 10px;
-    height: 50px;
-    width: 500px;
-    text-align: center;
-  }
-  
-  .cell {
-    cursor: pointer;
-  }
+}
+.coordLetters > div {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+
+th, td {
+  border: 1px solid #1eb980;
+  padding: 10px;
+  height: 75px;
+  width: 500px;
+  text-align: center;
+}
+
+.cell {
+  cursor: pointer;
+}
