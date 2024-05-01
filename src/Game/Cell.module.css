@@ -8,6 +8,10 @@
     width: 100%; /* Ensure the div takes full width of the parent td */
     height:100%; /* Ensure the div takes full height of the parent td */
   }
+
+  .cell:hover {
+    cursor: pointer;
+  }
   
   .clicked {
     background-color: blue; /* Change color when clicked */

@@ -3,7 +3,7 @@ import React from "react";
 import Grid from "./Grid";
 import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
-// import ResignButton from "./ResignButton";
+import ResignButton from "./ResignButton";
 
 const Game = () => {
 	// const handleResign = () => {
@@ -15,6 +15,7 @@ const Game = () => {
 			<Grid />
 			<ChatBox />
 			<UsersConnectedBox />
+			<ResignButton />
 			{/* <ResignButton onClick={handleResign} /> */}
 		</div>
 	);
