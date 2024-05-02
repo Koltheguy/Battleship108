@@ -128,14 +128,20 @@ const newGame = async ({ user, gameName, timer }) => {
 		currentPlayer: 0,
 		timeStarted: serverTimestamp(),
 		winner: "",
-		visibleX: [],
-		visibleY: [],
-		shipsX: [],
-		shipsY: [],
+		visible1X: [],
+		visible1Y: [],
+		ships1X: [],
+		ships1Y: [],
+
+		visible2X: [],
+		visible2Y: [],
+		ships2X: [],
+		ships2Y: [],
 	});
 
 	const gameId = docRef.id;
-	setDoc(doc(db, "User", user.uid), {
+	// console.log(gameId);
+	await updateDoc(doc(db, "User", user.uid), {
 		currentGame: gameId,
 	});
 };

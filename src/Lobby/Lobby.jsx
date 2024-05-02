@@ -21,7 +21,7 @@ const Lobby = () => {
 		doc(db, "User", user.uid)
 	);
 
-	const [gameCollection] = useCollectionData(
+	const [gameCollection, isGameCollectionLoading] = useCollectionData(
 		query(collection(db, "Game"), where("gameState", "in", [0, 1]))
 	);
 
@@ -59,7 +59,7 @@ const Lobby = () => {
 		await setUsername(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
 	};
 
-	if (!isUserDocLoading && userDoc.currentGame !== "") {
+	if (!isUserDocLoading && userDoc && userDoc.currentGame !== "") {
 		return <Game user={user} gameId={userDoc.currentGame} />;
 	} else if (isNewGame) {
 		return <NewGame user={user} toggleNewGamePage={toggleNewGamePage} />;
@@ -102,20 +102,21 @@ const Lobby = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{gameCollection.map((item) => (
-							<tr key={item.gameName}>
-								<td>{item.gameName}</td>
-								<td>{item.players[0]}</td>
-								<td>{item.gameState}</td>
-								<td>
-									<button
-										className={`${styles.pureMaterial} ${styles.join}`}
-									>
-										Join
-									</button>
-								</td>
-							</tr>
-						))}
+						{!isGameCollectionLoading &&
+							gameCollection.map((item) => (
+								<tr key={item.gameName}>
+									<td>{item.gameName}</td>
+									<td>{item.players[0]}</td>
+									<td>{item.gameState}</td>
+									<td>
+										<button
+											className={`${styles.pureMaterial} ${styles.join}`}
+										>
+											Join
+										</button>
+									</td>
+								</tr>
+							))}
 					</tbody>
 				</table>
 			</div>
