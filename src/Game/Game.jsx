@@ -4,12 +4,12 @@ import Grid from "./Grid";
 import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
 import ResignButton from "./ResignButton";
-import { leaveGame } from "../firebase";
+// import { leaveGame } from "../firebase";
 
 const Game = ({ user, gameId }) => {
 	return (
 		<div>
-			<button onClick={leaveGame({ user, gameId })}>LEAVE</button>
+			{/* <button onClick={leaveGame({ user, gameId })}>LEAVE</button> */}
 			<Grid />
 			<ChatBox />
 			<UsersConnectedBox />

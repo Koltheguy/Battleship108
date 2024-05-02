@@ -141,7 +141,7 @@ const newGame = async ({ user, gameName, timer }) => {
 
 	const gameId = docRef.id;
 	// console.log(gameId);
-	await updateDoc(doc(db, "User", user.uid), {
+	updateDoc(doc(db, "User", user.uid), {
 		currentGame: gameId,
 	});
 };

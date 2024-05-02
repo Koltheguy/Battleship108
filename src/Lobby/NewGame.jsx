@@ -14,7 +14,6 @@ function NewGame({ user, toggleNewGamePage }) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(user);
 		newGame({ user, gameName, timer });
 		toggleNewGamePage();
 	};
