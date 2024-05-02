@@ -11,9 +11,9 @@ const Game = ({ user, gameId }) => {
 		<div>
 			{/* <button onClick={leaveGame({ user, gameId })}>LEAVE</button> */}
 			<Grid />
-			<ChatBox />
+			{/* <ChatBox />
 			<UsersConnectedBox />
-			<ResignButton />
+			<ResignButton /> */}
 			{/* <ResignButton onClick={handleResign} /> */}
 		</div>
 	);

@@ -1,14 +1,13 @@
-.grid {
+/* .grid {
   display: flex;
   justify-content: center;
-  margin-top: 500px;
-  margin-right: 60%;
-  width: 50%;
+  width: 50px;
   height: 50%;
   align-items: center;
   color: black;
-  padding: 10px;
-}
+  padding: 0px;
+} */
+
 
 table {
   border-collapse: collapse;
@@ -27,6 +26,7 @@ table {
   color: #1eb980;
   border: none;
   justify-content: space-between;
+  padding: 10px;
   
 }
 .coordLetters > div {
@@ -40,9 +40,9 @@ table {
 
 th, td {
   border: 1px solid #1eb980;
-  padding: 10px;
+  padding: 0px;
   height: 75px;
-  width: 500px;
+  width: 75px ;
   text-align: center;
 }
 

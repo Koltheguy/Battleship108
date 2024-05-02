@@ -12,8 +12,8 @@ const Grid = () => {
 	};
   
 	return (
-	  <div className={styles.grid}>
-		<table>
+	  <div>
+		<table> 
 		  <tbody>
 			<tr>
 			  <th className={styles.emptycell}></th>
@@ -25,7 +25,7 @@ const Grid = () => {
 			  <tr key={rowIndex}>
 				<th className={styles.coordLetters}>{String.fromCharCode(65 + rowIndex)}</th>
 				{row.map((cell, colIndex) => (
-				  <td>
+				  <td >
 					<Cell
 					key={colIndex}
 					className={`${styles.cell} ${colIndex === 0 ? styles.firstColumn : ''}`}
