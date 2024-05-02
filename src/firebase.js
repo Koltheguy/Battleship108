@@ -31,15 +31,15 @@ import {
 	englishRecommendedTransformers,
 } from "obscenity";
 
-const GRID_SIZE = 10;
-const SHIP_TYPES = {
-	carrier: 5,
-	battleship: 4,
-	cruiser: 3,
-	destroyer: 3,
-	frigate: 2,
-	corvette: 2,
-};
+// const GRID_SIZE = 10;
+// const SHIP_TYPES = {
+// 	carrier: 5,
+// 	battleship: 4,
+// 	cruiser: 3,
+// 	destroyer: 3,
+// 	frigate: 2,
+// 	corvette: 2,
+// };
 
 const app = firebase.initializeApp({
 	// client requires this to access firestore
@@ -177,7 +177,7 @@ const placeShip = async ({ user, shipType, position, orientation }) => {};
 const attack = async (user) => {};
 const view = async (user) => {};
 const sendMessage = async ({ user, message }) => {
-	const matches = obscenityMatcher.getAllMatches(message);
+	// const matches = obscenityMatcher.getAllMatches(message);
 };
 
 export {
