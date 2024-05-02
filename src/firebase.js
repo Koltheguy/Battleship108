@@ -1,11 +1,27 @@
 import firebase from "firebase/compat/app";
 import { getAuth, updateProfile } from "firebase/auth";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import {
+	getFirestore,
+	addDoc,
+	setDoc,
+	updateDoc,
+	arrayUnion,
+	increment,
+	arrayRemove,
+	doc,
+	collection,
+	serverTimestamp,
+	getCountFromServer,
+	query,
+	where,
+	documentId,
+} from "firebase/firestore";
 import {
 	uniqueNamesGenerator,
 	adjectives,
 	colors,
 	animals,
+	languages,
 } from "unique-names-generator";
 
 import {
@@ -14,6 +30,16 @@ import {
 	englishDataset,
 	englishRecommendedTransformers,
 } from "obscenity";
+
+const GRID_SIZE = 10;
+const SHIP_TYPES = {
+	carrier: 5,
+	battleship: 4,
+	cruiser: 3,
+	destroyer: 3,
+	frigate: 2,
+	corvette: 2,
+};
 
 const app = firebase.initializeApp({
 	// client requires this to access firestore
@@ -56,31 +82,112 @@ const changeUserName = async (name) => {
 	}).then(() => cleanedName);
 };
 
-const initializeUser = (user) => {
-	console.log(user);
+const initializeUser = async (user) => {
+	const snap = await getCountFromServer(
+		query(collection(db, "User"), where(documentId(), "==", user.uid))
+	);
+
+	if (!snap.data().count)
+		setDoc(doc(db, "User", user.uid), {
+			wins: 0,
+			loses: 0,
+			gamesPlayed: 0,
+			currentGame: "",
+			isChatBanned: false,
+		});
+};
+
+const newGame = async ({ user, gameName, timer }) => {
+	switch (timer) {
+		case "10s":
+			timer = 10;
+			break;
+		case "20s":
+			timer = 20;
+			break;
+		default:
+		case "30s":
+			timer = 30;
+			break;
+	}
+	if (gameName === "")
+		gameName = `The ${uniqueNamesGenerator({
+			dictionaries: [colors, adjectives, languages],
+			separator: " ",
+			style: "capital",
+			seed: Date.now(),
+		})} Battle`;
+
+	const docRef = await addDoc(collection(db, "Game"), {
+		gameName: gameName,
+		timer: timer,
+		players: [user.uid],
+		spectate: [],
+		gameState: 0,
+		turn: 0,
+		currentPlayer: 0,
+		timeStarted: serverTimestamp(),
+		winner: "",
+		visibleX: [],
+		visibleY: [],
+		shipsX: [],
+		shipsY: [],
+	});
+
+	const gameId = docRef.id;
 	setDoc(doc(db, "User", user.uid), {
-		wins: 0,
-		loses: 0,
-		gamesPlayed: 0,
+		currentGame: gameId,
 	});
 };
 
-const newGame = async (user) => {};
-const joinGame = async (user) => {};
-const resign = async (user) => {};
-const placeShip = async (user) => {};
+const joinGame = async ({ user, gameId, isPlayer }) => {
+	if (isPlayer)
+		updateDoc(doc(db, "Game", gameId), {
+			players: arrayUnion(user.uid),
+			currentGame: gameId,
+		});
+	else
+		updateDoc(doc(db, "Game", gameId), {
+			spectate: arrayUnion(user.uid),
+			currentGame: gameId,
+		});
+};
+
+const leaveGame = async ({ user, gameId, isPlayer }) => {
+	if (isPlayer) {
+		updateDoc(doc(db, "Game", gameId), {
+			players: arrayRemove(user.uid),
+		});
+		updateDoc(doc(db, "User", user.uid), {
+			currentGame: "",
+			loses: increment(1),
+			gamesPlayed: 0,
+		});
+	} else {
+		updateDoc(doc(db, "Game", gameId), {
+			spectate: arrayRemove(user.uid),
+		});
+		updateDoc(doc(db, "User", user.uid), {
+			currentGame: "",
+		});
+	}
+};
+
+const placeShip = async ({ user, shipType, position, orientation }) => {};
 const attack = async (user) => {};
 const view = async (user) => {};
-const sendMessage = async (user) => {};
+const sendMessage = async ({ user, message }) => {
+	const matches = obscenityMatcher.getAllMatches(message);
+};
 
 export {
 	auth,
 	db,
 	initializeUser,
 	changeUserName,
-	joinGame,
 	newGame,
-	resign,
+	joinGame,
+	leaveGame,
 	placeShip,
 	attack,
 	view,

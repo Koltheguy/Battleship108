@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import styles from "./Lobby.module.css";
-import { auth, changeUserName } from "../firebase";
+import { query, where, doc, collection } from "firebase/firestore";
+import {
+	useDocumentData,
+	useCollectionData,
+} from "react-firebase-hooks/firestore";
+import { db, auth, changeUserName } from "../firebase";
 import NewGame from "./NewGame";
+import Game from "../Game/Game";
+import styles from "./Lobby.module.css";
 
 const Lobby = () => {
 	const [refresh, setRefresh] = useState(true);
 
 	const [user] = useAuthState(auth);
 	const { displayName } = user;
+
+	const [userDoc, isUserDocLoading] = useDocumentData(
+		doc(db, "User", user.uid)
+	);
+
+	const [gameCollection, isGameCollectionLoading] = useCollectionData(
+		query(collection(db, "Game"), where("gameState", "in", [0, 1]))
+	);
 
 	const [isNewGame, setIsNewGame] = useState(false);
 	const toggleNewGamePage = () => {
@@ -45,15 +59,10 @@ const Lobby = () => {
 		await setUsername(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
 	};
 
-	// Example data for the table
-	const tableData = [
-		{ game: 1, name: "Alice", status: "Waiting for players" },
-		{ game: 2, name: "Bob", status: "In Progress" },
-		{ game: 3, name: "Charlie", status: "Waiting for players" },
-	];
-
-	if (isNewGame) {
-		return <NewGame toggleNewGamePage={toggleNewGamePage} />;
+	if (!isUserDocLoading && userDoc.currentGame !== "") {
+		return <Game user={user} gameId={userDoc.currentGame} />;
+	} else if (isNewGame) {
+		return <NewGame user={user} toggleNewGamePage={toggleNewGamePage} />;
 	} else
 		return (
 			<div className={styles.body}>
@@ -93,11 +102,11 @@ const Lobby = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{tableData.map((item) => (
-							<tr key={item.id}>
-								<td>{item.game}</td>
-								<td>{item.name}</td>
-								<td>{item.status}</td>
+						{gameCollection.map((item) => (
+							<tr key={item.gameName}>
+								<td>{item.gameName}</td>
+								<td>{item.players[0]}</td>
+								<td>{item.gameState}</td>
 								<td>
 									<button
 										className={`${styles.pureMaterial} ${styles.join}`}

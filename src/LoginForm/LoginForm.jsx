@@ -57,7 +57,6 @@ const LoginForm = () => {
 			} else if (buttonType === "login")
 				await signInWithEmailAndPassword(auth, email, password).then(
 					({ user }) => {
-						console.log(user);
 						initializeUser(user);
 					}
 				);
@@ -67,7 +66,6 @@ const LoginForm = () => {
 					email,
 					password
 				).then(({ user }) => {
-					console.log(user);
 					initializeUser(user);
 				});
 		} else {
@@ -77,7 +75,6 @@ const LoginForm = () => {
 
 	const googleAuthPopup = async () => {
 		await signInWithPopup(auth, provider).then(({ user }) => {
-			console.log(user);
 			initializeUser(user);
 		});
 	};

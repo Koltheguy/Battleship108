@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { newGame } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./dark-theme.css";
 
-function NewGame({ toggleNewGamePage }) {
-	const [timer, setTimer] = useState("10s");
+function NewGame({ user, toggleNewGamePage }) {
+	const [timer, setTimer] = useState("30s");
 	const handleTimerChange = (event) => setTimer(event.target.value);
 	const [gameName, setGameName] = useState("");
 	const handleGameNameChange = (event) => {
 		setGameName(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
 	};
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log(user);
+		newGame({ user, gameName, timer });
 		toggleNewGamePage();
 	};
 
