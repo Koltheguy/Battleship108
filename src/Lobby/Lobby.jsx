@@ -99,6 +99,7 @@ const Lobby = () => {
 							<th>Game</th>
 							<th>Created by</th>
 							<th>Status</th>
+							<th>Join</th>
 						</tr>
 					</thead>
 					<tbody>
