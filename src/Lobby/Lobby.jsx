@@ -21,7 +21,7 @@ const Lobby = () => {
 		doc(db, "User", user.uid)
 	);
 
-	const [gameCollection, isGameCollectionLoading] = useCollectionData(
+	const [gameCollection] = useCollectionData(
 		query(collection(db, "Game"), where("gameState", "in", [0, 1]))
 	);
 
