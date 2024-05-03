@@ -1,12 +1,12 @@
 .battlefield {
   display: flex;
   justify-content: center;
-  margin-right: 60%;
-  margin-top: 50px;
+  margin-right: 20%;
+  margin-top: 5%;
   width: 50%;
   align-items: center;
   color: black;
-  padding: 10px;
+  padding: 1%;
   border: none;
 }
 

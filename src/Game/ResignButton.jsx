@@ -7,8 +7,8 @@ const ResignButton = ({ onClick }) => {
       className={styles.button}
       onClick={onClick}
       style={{
-        left: "1340px",
-        bottom: "652px",
+        left: "74.97%",
+        bottom: "65.52%",
         width: "356px",
         height: "180px",
         fontSize: "80px",
