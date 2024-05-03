@@ -33,5 +33,11 @@
     margin-top: 460px;
     position: absolute;
     flex-shrink: 0;
+    width: 900px;
+  }
+
+  .chatButton {
+    background-color: #1eb980;
+    color: white;
   }
   

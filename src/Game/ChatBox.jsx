@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatBox.module.css";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const chatBodyRef = useRef(null);
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -16,12 +22,19 @@ const ChatBox = () => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      
+      handleSendMessage(); // Call the function to send the message
+    }
+  };
+
   return (
     <div className={styles.chatBox}>
       <div className={styles.chatHeader}>
         <h2>Chat:</h2>
       </div>
-      <div className={styles.chatBody}>
+      <div className={styles.chatBody} ref={chatBodyRef}>
         {}
         {messages.map((msg, index) => (
           <div key={index}>{msg}</div>
@@ -33,10 +46,11 @@ const ChatBox = () => {
           type="text"
           value={message}
           onChange={handleMessageChange}
+		  onKeyPress={handleKeyPress}
           placeholder="Type your message..."
         />
         {}
-        <button onClick={handleSendMessage}>Send</button>
+        <button className={styles.chatButton} onClick={handleSendMessage}>Send</button>
       </div>
     </div>
   );
