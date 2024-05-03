@@ -26,8 +26,6 @@ table {
 .coordLetters {
   color: #1eb980;
   border: none;
-  /* justify-content: space-between; */
-  
 }
 .coordLetters > div {
   flex-grow: 1;
