@@ -186,30 +186,18 @@ const leaveGame = async ({ user, gameId, isPlayer }) => {
 //#endregion
 
 //#region game setup
-const getShips = async ({ user, gameId, isSelf }) => {
+const getShips = async ({ gameId, playerNum }) => {
 	const docSnap = await getDoc(doc(db, "Game", gameId));
 	const ships = [];
 	if (docSnap.exists()) {
 		const data = docSnap.data();
-		if (isSelf) {
-			if (data.players[0] === user.uid) {
-				for (let i = 0; i < data.ships1X.length; i++) {
-					ships.push([data.ships1X[i], data.ships1Y[i]]);
-				}
-			} else if (data.players[1] === user.uid) {
-				for (let i = 0; i < data.ships2X.length; i++) {
-					ships.push([data.ships2X[i], data.ships2Y[i]]);
-				}
+		if (playerNum === 0) {
+			for (let i = 0; i < data.ships1X.length; i++) {
+				ships.push([data.ships1X[i], data.ships1Y[i]]);
 			}
-		} else {
-			if (data.players[1] === user.uid) {
-				for (let i = 0; i < data.ships1X.length; i++) {
-					ships.push([data.ships1X[i], data.ships1Y[i]]);
-				}
-			} else if (data.players[0] === user.uid) {
-				for (let i = 0; i < data.ships2X.length; i++) {
-					ships.push([data.ships2X[i], data.ships2Y[i]]);
-				}
+		} else if (playerNum === 1) {
+			for (let i = 0; i < data.ships2X.length; i++) {
+				ships.push([data.ships2X[i], data.ships2Y[i]]);
 			}
 		}
 	}
@@ -234,7 +222,8 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	} else {
 		if (position[1] + shipSize >= GRID_SIZE) return -1;
 	}
-	const ships = getShips({ user, gameId, isSelf: true });
+	const { playerNum } = checkTurn({ user, gameId });
+	const ships = getShips({ gameId, playerNum });
 	if (ships.length < 1) return -1;
 
 	const shipCoords = [];
@@ -282,7 +271,7 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	return -1;
 };
 
-const checkTurn = async (user, gameId) => {
+const checkTurn = async ({ user, gameId }) => {
 	let playerNum = -1,
 		isCurrent = false;
 	const docSnap = await getDoc(doc(db, "Game", gameId));
@@ -303,7 +292,7 @@ const attack = async ({ user, gameId, position }) => {
 	const { playerNum, isCurrent } = checkTurn({ user, gameId });
 	if (!isCurrent || playerNum === -1) return -1;
 
-	const ships = getShips({ user, gameId, isSelf: false });
+	const ships = getShips({ gameId, playerNum: playerNum === 0 ? 1 : 0 });
 	const isHit = checkHit({ hit: position, ships });
 
 	if (playerNum === 0) {
@@ -329,14 +318,44 @@ const attack = async ({ user, gameId, position }) => {
 	}
 };
 
-const view = async ({ user, gameId, isSelf }) => {
-	// const docSnap = await getDoc(doc(db, "Game", gameId));
-	// // 0 unknown, 1 hit, -1 miss
-	// const field = Array.from(Array(GRID_SIZE), (_) => Array(GRID_SIZE).fill(0));
-	// if (docSnap.exists()) {
-	// 	const data = docSnap.data();
-	// 	for (let x = 0; x < GRID_SIZE; ) {}
-	// }
+const view = async ({ gameId, playerNum }) => {
+	const docSnap = await getDoc(doc(db, "Game", gameId));
+	// 0 unknown, 1 hit, -1 miss
+	const hit = [],
+		miss = [];
+	if (docSnap.exists()) {
+		const data = docSnap.data();
+		if (playerNum === 0) {
+			const ships = getShips({ gameId, playerNum });
+			for (let i = 0; i < data.viewable1X.length; i++) {
+				if (
+					checkHit({
+						hit: [data.visible1X[i], data.visible1Y[i]],
+						ships,
+					})
+				) {
+					hit.push([data.visible1X[i], data.visible1Y[i]]);
+				} else {
+					miss.push([data.visible1X[i], data.visible1Y[i]]);
+				}
+			}
+		} else if (playerNum === 1) {
+			const ships = getShips({ gameId, playerNum });
+			for (let i = 0; i < data.viewable2X.length; i++) {
+				if (
+					checkHit({
+						hit: [data.visible2X[i], data.visible2Y[i]],
+						ships,
+					})
+				) {
+					hit.push([data.visible2X[i], data.visible2Y[i]]);
+				} else {
+					miss.push([data.visible2X[i], data.visible2Y[i]]);
+				}
+			}
+		}
+	}
+	return { hit, miss };
 };
 const sendMessage = async ({ user, message }) => {
 	// const matches = obscenityMatcher.getAllMatches(message);
@@ -347,7 +366,6 @@ export {
 	db,
 	initializeUser,
 	changeUserName,
-	getShips,
 	newGame,
 	joinGame,
 	leaveGame,
