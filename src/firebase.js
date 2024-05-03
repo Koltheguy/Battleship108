@@ -1,7 +1,9 @@
+//#region imports
 import firebase from "firebase/compat/app";
 import { getAuth, updateProfile } from "firebase/auth";
 import {
 	getFirestore,
+	getDoc,
 	addDoc,
 	setDoc,
 	updateDoc,
@@ -30,16 +32,18 @@ import {
 	englishDataset,
 	englishRecommendedTransformers,
 } from "obscenity";
+//#endregion
+const GRID_SIZE = 10;
+const SHIP_TYPES = {
+	carrier: 5,
+	battleship: 4,
+	cruiser: 3,
+	destroyer: 3,
+	frigate: 2,
+	corvette: 2,
+};
 
-// const GRID_SIZE = 10;
-// const SHIP_TYPES = {
-// 	carrier: 5,
-// 	battleship: 4,
-// 	cruiser: 3,
-// 	destroyer: 3,
-// 	frigate: 2,
-// 	corvette: 2,
-// };
+const LIVES_TOTAL = 19;
 
 const app = firebase.initializeApp({
 	// client requires this to access firestore
@@ -61,7 +65,7 @@ const obscenityMatcher = new RegExpMatcher({
 });
 const xStrategy = (ctx) => "X".repeat(ctx.matchLength);
 const censor = new TextCensor().setStrategy(xStrategy);
-
+//#region user
 const changeUserName = async (name) => {
 	if (!auth || !auth.currentUser) return;
 	const matches = obscenityMatcher.getAllMatches(name);
@@ -81,7 +85,6 @@ const changeUserName = async (name) => {
 		displayName: cleanedName,
 	}).then(() => cleanedName);
 };
-
 const initializeUser = async (user) => {
 	const snap = await getCountFromServer(
 		query(collection(db, "User"), where(documentId(), "==", user.uid))
@@ -96,7 +99,9 @@ const initializeUser = async (user) => {
 			isChatBanned: false,
 		});
 };
+//#endregion
 
+//#region game
 const newGame = async ({ user, gameName, timer }) => {
 	switch (timer) {
 		case "10s":
@@ -128,11 +133,13 @@ const newGame = async ({ user, gameName, timer }) => {
 		currentPlayer: 0,
 		timeStarted: serverTimestamp(),
 		winner: "",
+		lives1: LIVES_TOTAL,
 		visible1X: [],
 		visible1Y: [],
 		ships1X: [],
 		ships1Y: [],
 
+		lives2: LIVES_TOTAL,
 		visible2X: [],
 		visible2Y: [],
 		ships2X: [],
@@ -145,7 +152,6 @@ const newGame = async ({ user, gameName, timer }) => {
 		currentGame: gameId,
 	});
 };
-
 const joinGame = async ({ user, gameId, isPlayer }) => {
 	if (isPlayer)
 		updateDoc(doc(db, "Game", gameId), {
@@ -158,7 +164,6 @@ const joinGame = async ({ user, gameId, isPlayer }) => {
 			currentGame: gameId,
 		});
 };
-
 const leaveGame = async ({ user, gameId, isPlayer }) => {
 	if (isPlayer) {
 		updateDoc(doc(db, "Game", gameId), {
@@ -178,10 +183,161 @@ const leaveGame = async ({ user, gameId, isPlayer }) => {
 		});
 	}
 };
+//#endregion
 
-const placeShip = async ({ user, shipType, position, orientation }) => {};
-const attack = async (user) => {};
-const view = async (user) => {};
+//#region game setup
+const getShips = async ({ user, gameId, isSelf }) => {
+	const docSnap = await getDoc(doc(db, "Game", gameId));
+	const ships = [];
+	if (docSnap.exists()) {
+		const data = docSnap.data();
+		if (isSelf) {
+			if (data.players[0] === user.uid) {
+				for (let i = 0; i < data.ships1X.length; i++) {
+					ships.push([data.ships1X[i], data.ships1Y[i]]);
+				}
+			} else if (data.players[1] === user.uid) {
+				for (let i = 0; i < data.ships2X.length; i++) {
+					ships.push([data.ships2X[i], data.ships2Y[i]]);
+				}
+			}
+		} else {
+			if (data.players[1] === user.uid) {
+				for (let i = 0; i < data.ships1X.length; i++) {
+					ships.push([data.ships1X[i], data.ships1Y[i]]);
+				}
+			} else if (data.players[0] === user.uid) {
+				for (let i = 0; i < data.ships2X.length; i++) {
+					ships.push([data.ships2X[i], data.ships2Y[i]]);
+				}
+			}
+		}
+	}
+	return ships;
+};
+
+const checkHit = async ({ hit, ships }) => {
+	return ships.some((ship) => {
+		return ship[0] === hit[0] && ship[1] === hit[1];
+	});
+};
+
+const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
+	//return -1 if fail
+	//return 1 if succeed
+	if (!SHIP_TYPES.hasOwnProperty(shipType)) return -1;
+	if (orientation !== "horizontal" && orientation !== "vertical") return -1;
+	if (position[0] < 0 || position[1] < 0) return -1;
+	const shipSize = SHIP_TYPES[shipType];
+	if (orientation === "horizontal") {
+		if (position[0] + shipSize >= GRID_SIZE) return -1;
+	} else {
+		if (position[1] + shipSize >= GRID_SIZE) return -1;
+	}
+	const ships = getShips({ user, gameId, isSelf: true });
+	if (ships.length < 1) return -1;
+
+	const shipCoords = [];
+	if (orientation === "horizontal") {
+		for (let i = 0; i < shipSize; i++) {
+			shipCoords.push([position[0] + i, position[1]]);
+		}
+	} else {
+		for (let i = 0; i < shipSize; i++) {
+			shipCoords.push([position[0], position[1] + i]);
+		}
+	}
+
+	const isValid = shipCoords.every((coord) => {
+		return !checkHit({ hit: coord, ships });
+	});
+	if (!isValid) return -1;
+
+	const shipX = [];
+	const shipY = [];
+
+	shipCoords.forEach((coord) => {
+		shipX.push(coord[0]);
+		shipY.push(coord[1]);
+	});
+
+	const docSnap = await getDoc(doc(db, "Game", gameId));
+	if (docSnap.exists()) {
+		const data = docSnap.data();
+		if (data.players[0] === user.uid) {
+			await updateDoc(doc(db, "Game", gameId), {
+				ship1X: arrayUnion(shipX),
+				ship1Y: arrayUnion(shipY),
+			});
+			return 1;
+		} else if (data.players[1] === user.uid) {
+			await updateDoc(doc(db, "Game", gameId), {
+				ship2X: arrayUnion(shipX),
+				ship2Y: arrayUnion(shipY),
+			});
+			return 1;
+		}
+	}
+
+	return -1;
+};
+
+const checkTurn = async (user, gameId) => {
+	let playerNum = -1,
+		isCurrent = false;
+	const docSnap = await getDoc(doc(db, "Game", gameId));
+	if (docSnap.exists()) {
+		const data = docSnap.data();
+		playerNum =
+			data.players[0] === user.uid
+				? 0
+				: data.players[1] === user.uid
+				? 1
+				: -1;
+		isCurrent = data.players[data.currentPlayer] === user.uid;
+	}
+	return { playerNum, isCurrent };
+};
+
+const attack = async ({ user, gameId, position }) => {
+	const { playerNum, isCurrent } = checkTurn({ user, gameId });
+	if (!isCurrent || playerNum === -1) return -1;
+
+	const ships = getShips({ user, gameId, isSelf: false });
+	const isHit = checkHit({ hit: position, ships });
+
+	if (playerNum === 0) {
+		await updateDoc(doc(db, "Game", gameId), {
+			turn: increment(1),
+			currentPlayer: isHit ? 0 : 1,
+			lastMove: serverTimestamp(),
+
+			lives2: increment(-1),
+			visible2X: arrayUnion(position[0]),
+			visible2Y: arrayUnion(position[1]),
+		});
+	} else if (playerNum === 1) {
+		await updateDoc(doc(db, "Game", gameId), {
+			turn: increment(1),
+			currentPlayer: isHit ? 1 : 0,
+			lastMove: serverTimestamp(),
+
+			lives1: increment(-1),
+			visible1X: arrayUnion(position[0]),
+			visible1Y: arrayUnion(position[1]),
+		});
+	}
+};
+
+const view = async ({ user, gameId, isSelf }) => {
+	// const docSnap = await getDoc(doc(db, "Game", gameId));
+	// // 0 unknown, 1 hit, -1 miss
+	// const field = Array.from(Array(GRID_SIZE), (_) => Array(GRID_SIZE).fill(0));
+	// if (docSnap.exists()) {
+	// 	const data = docSnap.data();
+	// 	for (let x = 0; x < GRID_SIZE; ) {}
+	// }
+};
 const sendMessage = async ({ user, message }) => {
 	// const matches = obscenityMatcher.getAllMatches(message);
 };
@@ -191,6 +347,7 @@ export {
 	db,
 	initializeUser,
 	changeUserName,
+	getShips,
 	newGame,
 	joinGame,
 	leaveGame,
