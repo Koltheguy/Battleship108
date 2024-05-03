@@ -5,10 +5,9 @@ const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const chatBodyRef = useRef(null);
+
   useEffect(() => {
-    if (chatBodyRef.current) {
-      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages]);
 
   const handleMessageChange = (event) => {
@@ -24,8 +23,14 @@ const ChatBox = () => {
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      
-      handleSendMessage(); // Call the function to send the message
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   };
 
@@ -35,22 +40,21 @@ const ChatBox = () => {
         <h2>Chat:</h2>
       </div>
       <div className={styles.chatBody} ref={chatBodyRef}>
-        {}
         {messages.map((msg, index) => (
           <div key={index}>{msg}</div>
         ))}
       </div>
       <div className={styles.chatFooter}>
-        {}
         <input
           type="text"
           value={message}
           onChange={handleMessageChange}
-		  onKeyPress={handleKeyPress}
+          onKeyPress={handleKeyPress}
           placeholder="Type your message..."
         />
-        {}
-        <button className={styles.chatButton} onClick={handleSendMessage}>Send</button>
+        <button className={styles.chatButton} onClick={handleSendMessage}>
+          Send
+        </button>
       </div>
     </div>
   );

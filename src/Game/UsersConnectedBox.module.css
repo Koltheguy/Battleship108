@@ -1,9 +1,10 @@
 .usersBox {
-    width: 300px;
+    position: absolute;
+    width: 330px;
     height: 180px;
     border: 5px solid #1eb980;
     color: white;
-    margin-left: 55%;
+    margin-left: 55.9%;
     margin-top: -710px;
     border-radius: 5px;
     overflow: hidden;
