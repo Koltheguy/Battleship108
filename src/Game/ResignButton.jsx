@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ResignButton.module.css";
+import { leaveGame, joinGame } from "../firebase";
 
-const ResignButton = ({ onClick }) => {
+const ResignButton = ({ user, gameId }) => {
+  const [isPlayer, setIsPlayer] = useState(false);
+
+  useEffect(() => {
+    const checkIsPlayer = async () => {
+      const isPlayerResult = await joinGame({ user, gameId, isPlayer});
+      setIsPlayer(isPlayerResult);
+    };
+
+    checkIsPlayer();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, gameId]);
+
+  const handleResign = async () => {
+    await leaveGame({ user, gameId, isPlayer });
+  };
+
   return (
-    <button
-      className={styles.button}
-      onClick={onClick}
-      // style={{
-      //   left: "74.97%",
-      //   bottom: "65.52%",
-      //   width: "356px",
-      //   height: "180px",
-      //   fontSize: "80px",
-      //   backgroundColor: "#1eb980",
-      // }}
-    >
-      Forfeit
+    <button className={styles.button} onClick={handleResign}>
+      {isPlayer ? "Forfeit" : "Leave"}
     </button>
   );
 };
