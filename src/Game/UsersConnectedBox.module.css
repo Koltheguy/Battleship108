@@ -4,12 +4,12 @@
     height: 180px;
     border: 5px solid #1eb980;
     color: white;
-    margin-left: 56%;
-    margin-top: -39%;
+    margin-left: 62.8rem; /* 56% of the viewport width */
+    margin-top: -44.4375rem; /* -39% of the viewport height */
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex; /* Added */
+    display: flex;
     flex-direction: column;
   }
   
@@ -26,4 +26,3 @@
   .usersBody {
     padding: 10px;
   }
-  
