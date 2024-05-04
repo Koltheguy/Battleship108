@@ -1,28 +1,29 @@
 .usersBox {
     position: absolute;
-    width: 330px;
-    height: 180px;
+    width: 290px;
+    height: 140px;
     border: 5px solid #1eb980;
     color: white;
-    margin-left: 62.8rem; /* 56% of the viewport width */
-    margin-top: -44.4375rem; /* -39% of the viewport height */
+    margin-left: 54.8rem; 
+    margin-top: -34.9375rem;
     border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
   }
   
   .usersHeader {
     background-color: #106e4b;
-    padding: 10px;
+    padding: 5px;
     border-bottom: 1px solid #106e4b;
   }
   
   .usersHeader h2 {
     margin: 0;
+    font-size: 20px;
   }
   
   .usersBody {
-    padding: 10px;
+    padding: 20px;
   }

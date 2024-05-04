@@ -1,11 +1,11 @@
 .chatBox {
     position: absolute;
-    width: 700px;
-    height: 500px;
+    width: 600px;
+    height: 400px;
     border: 5px solid #1eb980;
     color: white;
-    margin-left: 62.8rem;
-    margin-top: -32.8rem;
+    margin-left: 54.8rem;
+    margin-top: -26rem;
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -21,6 +21,7 @@
   
   .chatHeader h2 {
     margin: 0;
+    font-size: 30px;
   }
   
   .chatBody {
@@ -31,7 +32,7 @@
   }
 
   .chatFooter {
-    margin-top: 460px;
+    margin-top: 22.5rem;
     position: absolute;
     flex-shrink: 0;
     width: 900px;

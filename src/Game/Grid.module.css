@@ -7,6 +7,7 @@
   align-items: center;
   color: black;
   padding: 1%;
+  overflow: hidden;
   border: none;
 }
 
@@ -39,16 +40,16 @@ table {
 th, td {
   border: 1px solid #1eb980;
   padding: 0px;
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
   text-align: center;
 }
 
 .gCells {
   border: 1px solid #1eb980;
   padding: 0px;
-  height: 70px;
-  width: 70px;
+  height: 50px;
+  width: 50px;
   text-align: center;
 }
 
