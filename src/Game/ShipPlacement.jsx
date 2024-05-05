@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Grid from "./Grid";
 import { SHIP_TYPES, placeShip } from "../firebase.js";
 
-const ShipPlacement = (currentUser, currentGameId) => {
+const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent) => {
   const [currentShipIndex, setCurrentShipIndex] = useState(0);
   const [orientation, setOrientation] = useState("horizontal");
   const shipTypes = Object.keys(SHIP_TYPES);
