@@ -25,9 +25,9 @@ const Grid = () => {
             <tr key={rowIndex}>
               <th className={styles.coordLetters}>{String.fromCharCode(65 + rowIndex)}</th>
               {row.map((cell, colIndex) => (
-                <td className={styles.gCells}>
+                <td key={colIndex} className={styles.gCells}>
                   <Cell
-                  key={colIndex}
+                  // key={colIndex}
                   className={`${styles.cell} ${colIndex === 0 ? styles.firstColumn : ''}`}
                   onClick={() => updateGrid(rowIndex, colIndex)}
                 >
