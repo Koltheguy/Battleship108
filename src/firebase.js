@@ -4,7 +4,9 @@ import { getAuth, updateProfile } from "firebase/auth";
 import {
 	getFirestore,
 	getDoc,
+	getDocs,
 	addDoc,
+	deleteDoc,
 	setDoc,
 	updateDoc,
 	arrayUnion,
@@ -364,6 +366,22 @@ const sendMessage = async ({ user, message }) => {
 	// const matches = obscenityMatcher.getAllMatches(message);
 };
 
+//#region admin
+// const delOldGames = async () => {
+// 	const yesterday = new Date();
+// 	yesterday.setDate(yesterday.getDate() - 1);
+// 	const gameQuery = query(
+// 		collection(db, "Game"),
+// 		where("timeStarted", "<", yesterday)
+// 	);
+// 	const snap = await getDocs(gameQuery);
+// 	snap.forEach((gameDoc) => {
+// 		deleteDoc(doc(db, "Game", gameDoc.id));
+// 	});
+// };
+
+//#endregion
+
 export {
 	auth,
 	db,
@@ -379,4 +397,5 @@ export {
 	attack,
 	view,
 	sendMessage,
+	//delOldGames,
 };

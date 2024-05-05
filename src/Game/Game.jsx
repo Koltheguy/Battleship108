@@ -9,10 +9,10 @@ import ShipPlacement from "./ShipPlacement";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import { db, checkTurn } from "../firebase.js";
+import { db, checkTurn } from "../firebase";
 
 const Game = ({ user, gameId, isPlayer }) => {
-	const { playerNum, isCurrent } = checkTurn();
+	const { playerNum, isCurrent } = checkTurn({ user, gameId });
 	const [gameDoc, isGameDocLoading] = useDocumentData(
 		doc(db, "Game", gameId)
 	);
