@@ -270,7 +270,9 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 
 	return -1;
 };
+//#endregion
 
+//#region gameplay
 const checkTurn = async ({ user, gameId }) => {
 	let playerNum = -1,
 		isCurrent = false;
@@ -320,7 +322,6 @@ const attack = async ({ user, gameId, position }) => {
 
 const view = async ({ gameId, playerNum }) => {
 	const docSnap = await getDoc(doc(db, "Game", gameId));
-	// 0 unknown, 1 hit, -1 miss
 	const hit = [],
 		miss = [];
 	if (docSnap.exists()) {
@@ -357,6 +358,8 @@ const view = async ({ gameId, playerNum }) => {
 	}
 	return { hit, miss };
 };
+//#endregion
+
 const sendMessage = async ({ user, message }) => {
 	// const matches = obscenityMatcher.getAllMatches(message);
 };
@@ -364,14 +367,15 @@ const sendMessage = async ({ user, message }) => {
 export {
 	auth,
 	db,
+	SHIP_TYPES,
 	initializeUser,
 	changeUserName,
-	SHIP_TYPES,
 	newGame,
 	joinGame,
 	leaveGame,
 	getShips,
 	placeShip,
+	checkTurn,
 	attack,
 	view,
 	sendMessage,

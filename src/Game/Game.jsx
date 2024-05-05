@@ -6,10 +6,33 @@ import UsersConnectedBox from "./UsersConnectedBox";
 import ResignButton from "./ResignButton";
 import ShipPlacement from "./ShipPlacement";
 
+import { doc } from "firebase/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+
+import { db, checkTurn } from "../firebase.js";
+
 const Game = ({ user, gameId, isPlayer }) => {
+	const { playerNum, isCurrent } = checkTurn();
+	const [gameDoc, isGameDocLoading] = useDocumentData(
+		doc(db, "Game", gameId)
+	);
+
+	let gameState = false;
+	if (!isGameDocLoading && gameDoc && gameDoc.gameState !== "")
+		gameState = gameDoc.gameState;
+
 	return (
 		<div>
-			<ShipPlacement user={user} gameId={gameId} />
+			{gameState === 0 ? (
+				<ShipPlacement
+					user={user}
+					gameId={gameId}
+					playerNum={playerNum}
+					isCurrent={isCurrent}
+				/>
+			) : (
+				<></>
+			)}
 			{/* <Grid />
 			<ChatBox />
 			<UsersConnectedBox />*/}
