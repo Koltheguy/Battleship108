@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { newGame } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./dark-theme.css";
 
 function NewGame({ user, toggleNewGamePage }) {
 	const [timer, setTimer] = useState("30s");

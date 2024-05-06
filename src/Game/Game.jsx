@@ -3,7 +3,7 @@ import React from "react";
 import Grid from "./Grid";
 import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
-import ResignButton from "./ResignButton";
+import LeaveButton from "./LeaveButton";
 import ShipPlacement from "./ShipPlacement";
 
 import { doc } from "firebase/firestore";
@@ -29,20 +29,25 @@ const Game = ({ user, gameId, isPlayer }) => {
 					gameId={gameId}
 					playerNum={playerNum}
 					isCurrent={isCurrent}
-					player = {isPlayer}
+					player={isPlayer}
 				/>
 			) : gameState === 1 ? (
-                <>
-                    <Grid />
-                    <ChatBox />
-                    <UsersConnectedBox />
-                    <ResignButton user={user} gameId={gameId} player={isPlayer} />
-                </>
-            ) : gameState === 2 ? (
-                leaveGame({ user, gameId, isPlayer })
-            ) : null}
-        </div>
-    );
+				<>
+					<Grid />
+					<ChatBox />
+					<UsersConnectedBox />
+					<LeaveButton
+						user={user}
+						gameId={gameId}
+						player={isPlayer}
+						buttonText={isPlayer ? "Forefeit" : "Leave"}
+					/>
+				</>
+			) : gameState === 2 ? (
+				leaveGame({ user, gameId, isPlayer })
+			) : null}
+		</div>
+	);
 };
 
 export default Game;

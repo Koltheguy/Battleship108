@@ -1,0 +1,20 @@
+.dark-theme {
+	background-color: #26272e;
+	color: #ffffff;
+}
+
+.dark-theme input,
+.dark-theme .form-control {
+	background-color: #d3d3d3;
+	color: #4d5153;
+	border-color: #444444;
+}
+
+.dark-theme .form-check-input:checked {
+	background-color: #045d56;
+	border-color: #045d56;
+}
+
+.dark-theme .form-check-label {
+	color: #ffffff;
+}
