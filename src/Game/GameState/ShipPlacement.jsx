@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import Grid from "./Grid/Grid";
-import LeaveButton from "./LeaveButton";
+import Grid from "../Grid/Grid";
+import LeaveButton from "../LeaveButton";
 import styles from "./ShipPlacement.module.css";
-import { SHIP_TYPES, placeShip } from "../firebase.js";
-import { db, checkTurn, leaveGame } from "../firebase";
-import { doc } from "firebase/firestore";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import { SHIP_TYPES, placeShip } from "../../firebase.js";
 
 const ShipPlacement = ({ user, gameId, currentPlayer, isCurrent, player }) => {
 	const [currentShipIndex, setCurrentShipIndex] = useState(0);

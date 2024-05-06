@@ -4,12 +4,13 @@ import Grid from "./Grid/Grid";
 import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
 import LeaveButton from "./LeaveButton";
-import ShipPlacement from "./ShipPlacement";
+import ShipPlacement from "./GameState/ShipPlacement";
 
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import { db, checkTurn, leaveGame } from "../firebase";
+import GameOver from "./GameState/GameOver";
 
 const Game = ({ user, gameId, isPlayer }) => {
 	const { playerNum, isCurrent } = checkTurn({ user, gameId });
@@ -20,10 +21,12 @@ const Game = ({ user, gameId, isPlayer }) => {
 	let gameState = false;
 	if (!isGameDocLoading && gameDoc && gameDoc.gameState !== "")
 		gameState = gameDoc.gameState;
+	gameState = 2;
 
-	return (
-		<div>
-			{gameState === 0 ? (
+	let renderGame = null;
+	switch (gameState) {
+		case 0:
+			renderGame = (
 				<ShipPlacement
 					user={user}
 					gameId={gameId}
@@ -31,7 +34,10 @@ const Game = ({ user, gameId, isPlayer }) => {
 					isCurrent={isCurrent}
 					player={isPlayer}
 				/>
-			) : gameState === 1 ? (
+			);
+			break;
+		case 1:
+			renderGame = (
 				<>
 					{/* <Grid /> */}
 					<ChatBox />
@@ -43,11 +49,19 @@ const Game = ({ user, gameId, isPlayer }) => {
 						buttonText={isPlayer ? "Forefeit" : "Leave"}
 					/>
 				</>
-			) : gameState === 2 ? (
-				leaveGame({ user, gameId, isPlayer })
-			) : null}
-		</div>
-	);
+			);
+			break;
+		case 2:
+			renderGame = (
+				<GameOver user={user} gameId={gameId} player={isPlayer} />
+			);
+			break;
+		default:
+			renderGame = null;
+			break;
+	}
+
+	return renderGame;
 };
 
 export default Game;

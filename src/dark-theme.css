@@ -1,4 +1,4 @@
-.dark-theme {
+.dark-theme body {
 	background-color: #26272e;
 	color: #ffffff;
 }
@@ -17,4 +17,13 @@
 
 .dark-theme .form-check-label {
 	color: #ffffff;
+}
+
+.dark-theme .button {
+	background-color: #1eb980;
+	color: white;
+}
+
+.dark-theme .button:hover {
+	background-color: #17a668;
 }
