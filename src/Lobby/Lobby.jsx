@@ -21,6 +21,10 @@ const Lobby = () => {
 		doc(db, "User", user.uid)
 	);
 
+	if (!isUserDocLoading && !userDoc) {
+		signOut(auth);
+	}
+
 	const [gameCollection, isGameCollectionLoading] = useCollectionData(
 		query(collection(db, "Game"), where("gameState", "in", [0, 1]))
 	);
@@ -105,10 +109,14 @@ const Lobby = () => {
 					<tbody>
 						{!isGameCollectionLoading &&
 							gameCollection.map((item) => (
-								<tr key={item.gameName}>
+								<tr key={item.gameName + item.createdBy}>
 									<td>{item.gameName}</td>
-									<td>{item.players[0]}</td>
-									<td>{item.gameState}</td>
+									<td>{item.createdBy}</td>
+									<td>
+										{item.gameState === 0
+											? "Setting up"
+											: "In Progress"}
+									</td>
 									<td>
 										<button
 											className={`${styles.pureMaterial} ${styles.join}`}

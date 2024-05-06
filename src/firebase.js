@@ -69,6 +69,8 @@ const xStrategy = (ctx) => "X".repeat(ctx.matchLength);
 const censor = new TextCensor().setStrategy(xStrategy);
 //#region user
 const changeUserName = async (name) => {
+	if (name === null) name = "";
+	name = name.replace(/[^0-9a-zA-Z]+/gi, "");
 	if (!auth || !auth.currentUser) return;
 	const matches = obscenityMatcher.getAllMatches(name);
 	let cleanedName = censor.applyTo(name, matches);
@@ -83,16 +85,20 @@ const changeUserName = async (name) => {
 	}
 	console.info("name change", cleanedName);
 
-	await updateProfile(auth.currentUser, {
+	updateProfile(auth.currentUser, {
 		displayName: cleanedName,
-	}).then(() => cleanedName);
+	});
+
+	updateDoc(doc(db, "User", auth.currentUser.uid), {
+		displayName: cleanedName,
+	});
 };
 const initializeUser = async (user) => {
 	const snap = await getCountFromServer(
 		query(collection(db, "User"), where(documentId(), "==", user.uid))
 	);
 
-	if (!snap.data().count)
+	if (!snap.data().count) {
 		setDoc(doc(db, "User", user.uid), {
 			wins: 0,
 			loses: 0,
@@ -100,6 +106,8 @@ const initializeUser = async (user) => {
 			currentGame: "",
 			isChatBanned: false,
 		});
+		await changeUserName(user.displayName);
+	}
 };
 //#endregion
 
@@ -127,6 +135,7 @@ const newGame = async ({ user, gameName, timer }) => {
 
 	const docRef = await addDoc(collection(db, "Game"), {
 		gameName: gameName,
+		createdBy: user.displayName,
 		timer: timer,
 		players: [user.uid],
 		spectate: [],
