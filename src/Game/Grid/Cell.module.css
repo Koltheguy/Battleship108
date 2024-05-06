@@ -1,6 +1,23 @@
 .clickable :hover {
 	cursor: pointer;
 }
+
 .cell {
 	aspect-ratio: 1;
+}
+
+.ship {
+	background-color: #246522;
+}
+
+.destroyed {
+	background-color: #6e0b0b;
+}
+
+.hit {
+	background-color: #b51111;
+}
+
+.miss {
+	background-color: #eaeaea;
 }

@@ -182,8 +182,8 @@ const joinGame = async ({ user, gameId, isPlayer }) => {
 		});
 	}
 };
-const leaveGame = async ({ user, gameId, isPlayer }) => {
-	if (isPlayer) {
+const leaveGame = async ({ user, gameId, isLose }) => {
+	if (isLose) {
 		updateDoc(doc(db, "Game", gameId), {
 			players: arrayRemove(user.uid),
 		});

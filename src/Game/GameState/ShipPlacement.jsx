@@ -68,7 +68,7 @@ const ShipPlacement = ({ user, gameId, isPlayer }) => {
 					<LeaveButton
 						user={user}
 						gameId={gameId}
-						player={isPlayer}
+						isLose={false}
 						buttonText={"Leave"}
 					/>
 				</div>

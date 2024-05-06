@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import styles from "./Grid.module.css";
 import Cell from "./Cell";
 
-const Grid = ({ handleGridClick }) => {
+const Grid = ({ handleGridClick, gridData }) => {
 	const xHeader = useCallback(() => {
 		const headers = [];
 		for (let i = 0; i < 10; i++) {

@@ -39,13 +39,13 @@ const Game = ({ user, gameId, isPlayer }) => {
 		case 1:
 			renderGame = (
 				<>
-					{/* <Grid /> */}
+					{/* <Grid />
 					<ChatBox />
-					<UsersConnectedBox />
+					<UsersConnectedBox /> */}
 					<LeaveButton
 						user={user}
 						gameId={gameId}
-						isPlayer={isPlayer}
+						isLose={isPlayer}
 						buttonText={isPlayer ? "Forefeit" : "Leave"}
 					/>
 				</>
@@ -53,7 +53,7 @@ const Game = ({ user, gameId, isPlayer }) => {
 			break;
 		case 2:
 			renderGame = (
-				<GameOver user={user} gameId={gameId} player={isPlayer} />
+				<GameOver user={user} gameId={gameId} isPlayer={isPlayer} />
 			);
 			break;
 		default:

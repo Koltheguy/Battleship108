@@ -4,8 +4,8 @@ import { newGame } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function NewGame({ user, toggleNewGamePage }) {
-	const [timer, setTimer] = useState("30s");
-	const handleTimerChange = (event) => setTimer(event.target.value);
+	// const [timer, setTimer] = useState("30s");
+	// const handleTimerChange = (event) => setTimer(event.target.value);
 	const [gameName, setGameName] = useState("");
 	const handleGameNameChange = (event) => {
 		setGameName(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
@@ -13,7 +13,8 @@ function NewGame({ user, toggleNewGamePage }) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		newGame({ user, gameName, timer });
+		// newGame({ user, gameName, timer });
+		newGame({ user, gameName, timer: 30 });
 		toggleNewGamePage();
 	};
 
