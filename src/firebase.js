@@ -4,9 +4,9 @@ import { getAuth, updateProfile } from "firebase/auth";
 import {
 	getFirestore,
 	getDoc,
-	getDocs,
+	//getDocs,
+	//deleteDoc,
 	addDoc,
-	deleteDoc,
 	setDoc,
 	updateDoc,
 	arrayUnion,
