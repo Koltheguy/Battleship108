@@ -73,7 +73,7 @@ const ShipPlacement = ({ user, gameId, currentPlayer, isCurrent, player }) => {
 					Next Ship
 				</button>
 			</div>
-			<Grid onClick={handleCellClick} />
+			<Grid handleGridClick={handleCellClick} />
 			<LeaveButton
 				user={user}
 				gameId={gameId}

@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 import styles from "./Cell.module.css";
 
-const Cell = () => {
-	const [clicked, setClicked] = useState(false);
+const Cell = ({ handleClick, initClassName }) => {
+	if (!initClassName) initClassName = "";
+	const [className, setClassName] = useState(initClassName);
 
-	const handleClick = () => {
-		setClicked(!clicked);
-	};
-
-	return (
-		<div
-			className={`${styles.cell} ${clicked ? styles.clicked : ""}`}
-			onClick={handleClick}
-		></div>
-	);
+	return <div className={className} onClick={handleClick}></div>;
 };
 
 export default Cell;

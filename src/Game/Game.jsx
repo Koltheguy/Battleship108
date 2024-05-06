@@ -33,7 +33,7 @@ const Game = ({ user, gameId, isPlayer }) => {
 				/>
 			) : gameState === 1 ? (
 				<>
-					<Grid />
+					{/* <Grid /> */}
 					<ChatBox />
 					<UsersConnectedBox />
 					<LeaveButton
