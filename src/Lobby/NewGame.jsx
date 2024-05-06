@@ -34,7 +34,7 @@ function NewGame({ user, toggleNewGamePage }) {
 						onChange={handleGameNameChange}
 					/>
 				</Form.Group>
-				<Form.Group style={{ marginTop: "2rem" }}>
+				{/* <Form.Group style={{ marginTop: "2rem" }}>
 					<Form.Label>Timer</Form.Label>
 					<div style={{ display: "flex" }}>
 						{["10s", "20s", "30s"].map((time) => (
@@ -50,7 +50,7 @@ function NewGame({ user, toggleNewGamePage }) {
 							/>
 						))}
 					</div>
-				</Form.Group>
+				</Form.Group> */}
 				<Button
 					variant="success"
 					type="submit"

@@ -78,20 +78,17 @@ const Lobby = () => {
 	} else
 		return (
 			<div className={`${styles.body} ${styles.lobby}`}>
-				<div className={styles.user}>
-					username: {username}
-					<br />
+				<h1 className={styles.header}>Battleship</h1>
+				<div className={styles.inputs}>
+					Username:{" "}
 					<input
-						className={styles.input}
+						className={styles.user}
 						type="text"
 						id="username"
-						placeholder="Username"
+						placeholder="Random Username"
 						value={username}
 						onChange={handleUsernameChange}
 					/>
-				</div>
-				<h1 className={styles.header}>Battleship</h1>
-				<div className={styles.button}>
 					<button
 						className={`${styles.pureMaterial} ${styles.newGame}`}
 						onClick={toggleNewGamePage}
