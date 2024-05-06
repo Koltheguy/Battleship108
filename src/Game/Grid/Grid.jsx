@@ -37,7 +37,7 @@ const Grid = ({ handleGridClick, gridData }) => {
 						key={cellId}
 						tdKey={cellId}
 						handleClick={cellClick}
-						// className={gridData[cellId]}
+						className={gridData[cellId]}
 					/>
 				);
 			}

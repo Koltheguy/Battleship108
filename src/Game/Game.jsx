@@ -1,8 +1,7 @@
-// import React, { useState } from "react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { db, checkTurn, leaveGame } from "../firebase";
+import { db, leaveGame } from "../firebase";
 import LeaveButton from "./LeaveButton";
 
 // import Grid from "./Grid/Grid";
@@ -13,10 +12,19 @@ import ShipPlacement from "./GameState/ShipPlacement";
 import GameOver from "./GameState/GameOver";
 
 const Game = ({ user, gameId }) => {
-	const { playerNum, isCurrent } = checkTurn({ user, gameId });
 	const [gameDoc, isGameDocLoading] = useDocumentData(
 		doc(db, "Game", gameId)
 	);
+
+	const [playerNum, setPlayerNum] = useState(-1);
+	//const [isCurrent, setIsCurrent] = useState(false);
+
+	useEffect(() => {
+		if (isGameDocLoading) return;
+		const newPlayerNum = gameDoc.players[0] === user.uid ? 0 : 1;
+		setPlayerNum(newPlayerNum);
+		//setIsCurrent(gameDoc.currentPlayer === newPlayerNum);
+	}, [user.uid, gameDoc, isGameDocLoading, setPlayerNum]);
 
 	if (isGameDocLoading) return <>Loading</>;
 

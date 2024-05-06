@@ -35,7 +35,6 @@ const ShipPlacement = ({ user, gameId, playerNum }) => {
 			}
 			tempShipString = tempShipString.slice(shipLength * 2 + 1);
 		}
-		console.log(newGridData);
 		setGridData(newGridData);
 	}, [gameDoc, shipString, setGridData]);
 
