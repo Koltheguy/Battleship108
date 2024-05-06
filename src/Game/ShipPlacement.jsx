@@ -7,7 +7,7 @@ import { db, checkTurn, leaveGame } from "../firebase";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
-const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent, isPlayer) => {
+const ShipPlacement = ({user, gameId, currentPlayer, isCurrent, player}) => {
   const [currentShipIndex, setCurrentShipIndex] = useState(0);
   const [orientation, setOrientation] = useState("horizontal");
   const shipTypes = Object.keys(SHIP_TYPES);
@@ -30,8 +30,8 @@ const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent, isP
     console.log("handleCellClick GOT CALLED");
     if (selectedPosition !== null) {
       placeShip({
-        user: currentUser,
-        gameId: currentGameId,
+        user: user,
+        gameId: gameId,
         shipType: shipTypes[currentShipIndex],
         position: selectedPosition,
         orientation: orientation,
@@ -60,7 +60,7 @@ const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent, isP
         <button style = {{ backgroundColor: "#1eb980"}} onClick={handleNextShip}>Next Ship</button>
       </div>
       <Grid onClick={handleCellClick} />
-      <ResignButton user={currentUser} gameId={currentGameId} player={isPlayer}/>
+      <ResignButton user={user} gameId={gameId} player={player} />
     </div>
   );
 };
