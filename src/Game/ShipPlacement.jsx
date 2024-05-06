@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import Grid from "./Grid";
-import { SHIP_TYPES, placeShip } from "../firebase.js";
+import ResignButton from "./ResignButton";
+import styles from "./ShipPlacement.module.css"
+import { SHIP_TYPES, placeShip} from "../firebase.js";
+import { db, checkTurn, leaveGame } from "../firebase";
+import { doc } from "firebase/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
-const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent) => {
+const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent, isPlayer) => {
   const [currentShipIndex, setCurrentShipIndex] = useState(0);
   const [orientation, setOrientation] = useState("horizontal");
   const shipTypes = Object.keys(SHIP_TYPES);
@@ -47,7 +52,7 @@ const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent) => 
   return (
     <div>
       <h2 style = {{ color: "#1eb980"}}>Place Your Ships</h2>
-      <div>
+      <div className={styles.shipDisplay}>
         <h3 style = {{ color: "#1eb980"}}>Ship: {shipTypes[currentShipIndex]}</h3>
         <h4 style = {{ color: "#1eb980"}}>Size: {SHIP_TYPES[shipTypes[currentShipIndex]]}</h4>
         <h5 style = {{ color: "#1eb980"}}>Orientation: {orientation}</h5>
@@ -55,6 +60,7 @@ const ShipPlacement = (currentUser, currentGameId, currentPlayer, isCurrent) => 
         <button style = {{ backgroundColor: "#1eb980"}} onClick={handleNextShip}>Next Ship</button>
       </div>
       <Grid onClick={handleCellClick} />
+      <ResignButton user={currentUser} gameId={currentGameId} player={isPlayer}/>
     </div>
   );
 };

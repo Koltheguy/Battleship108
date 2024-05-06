@@ -1,9 +1,8 @@
 .battlefield {
   display: flex;
   justify-content: center;
-  margin-right: 14rem;
-  margin-top: 5rem;
-  width: 50%;
+  margin-right: 5rem;
+  width: 70%;
   align-items: center;
   color: black;
   padding: 1%;

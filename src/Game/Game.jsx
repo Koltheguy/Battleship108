@@ -5,12 +5,11 @@ import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
 import ResignButton from "./ResignButton";
 import ShipPlacement from "./ShipPlacement";
-import GameOver from "../Game Over/GameOver";
 
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import { db, checkTurn } from "../firebase";
+import { db, checkTurn, leaveGame } from "../firebase";
 
 const Game = ({ user, gameId, isPlayer }) => {
 	const { playerNum, isCurrent } = checkTurn({ user, gameId });
@@ -30,6 +29,7 @@ const Game = ({ user, gameId, isPlayer }) => {
 					gameId={gameId}
 					playerNum={playerNum}
 					isCurrent={isCurrent}
+					player = {isPlayer}
 				/>
 			) : gameState === 1 ? (
                 <>
@@ -39,7 +39,7 @@ const Game = ({ user, gameId, isPlayer }) => {
                     <ResignButton user={user} gameId={gameId} player={isPlayer} />
                 </>
             ) : gameState === 2 ? (
-                <GameOver />
+                leaveGame({ user, gameId, isPlayer })
             ) : null}
         </div>
     );
