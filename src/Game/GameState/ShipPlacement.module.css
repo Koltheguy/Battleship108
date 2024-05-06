@@ -4,13 +4,13 @@
 	width: 100vw;
 }
 
-h2,
-h3,
-h4,
-h5 {
+.shipPlacement h2,
+.shipPlacement h3,
+.shipPlacement h4,
+.shipPlacement h5 {
 	color: #1eb980;
 }
 
-button {
+.shipPlacement button {
 	background-color: #1eb980;
 }

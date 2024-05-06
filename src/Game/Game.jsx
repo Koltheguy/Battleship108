@@ -1,30 +1,36 @@
 // import React, { useState } from "react";
 import React from "react";
-import Grid from "./Grid/Grid";
-import ChatBox from "./ChatBox";
-import UsersConnectedBox from "./UsersConnectedBox";
-import LeaveButton from "./LeaveButton";
-import ShipPlacement from "./GameState/ShipPlacement";
-
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-
 import { db, checkTurn, leaveGame } from "../firebase";
+import LeaveButton from "./LeaveButton";
+
+// import Grid from "./Grid/Grid";
+// import ChatBox from "./ChatBox";
+// import UsersConnectedBox from "./UsersConnectedBox";
+import Spectate from "./Spectate";
+import ShipPlacement from "./GameState/ShipPlacement";
 import GameOver from "./GameState/GameOver";
 
-const Game = ({ user, gameId, isPlayer }) => {
+const Game = ({ user, gameId }) => {
 	const { playerNum, isCurrent } = checkTurn({ user, gameId });
 	const [gameDoc, isGameDocLoading] = useDocumentData(
 		doc(db, "Game", gameId)
 	);
 
-	let gameState = false;
-	if (!isGameDocLoading && !gameDoc) leaveGame({ user, gameId, isPlayer });
+	if (isGameDocLoading) return <>Loading</>;
 
-	if (!isGameDocLoading && gameDoc && gameDoc.gameState !== "")
+	if (!gameDoc) leaveGame({ user, gameId, isLose: false });
+
+	let gameState = false;
+	let isPlayer = null;
+	if (gameDoc.gameState !== "") {
 		gameState = gameDoc.gameState;
+		isPlayer = gameDoc.players.includes(user.uid);
+	}
 
 	let renderGame = null;
+	if (!isPlayer) return <Spectate />;
 	switch (gameState) {
 		case 0:
 			renderGame = (
@@ -32,7 +38,6 @@ const Game = ({ user, gameId, isPlayer }) => {
 					user={user}
 					gameId={gameId}
 					playerNum={playerNum}
-					isPlayer={isPlayer}
 				/>
 			);
 			break;

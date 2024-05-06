@@ -1,25 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { doc } from "firebase/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { db, SHIP_TYPES, placeShip } from "../../firebase";
+
 import Grid from "../Grid/Grid";
 import LeaveButton from "../LeaveButton";
 import styles from "./ShipPlacement.module.css";
-import { SHIP_TYPES, placeShip } from "../../firebase.js";
 
 const shipTypes = Object.keys(SHIP_TYPES);
 
-const ShipPlacement = ({ user, gameId, isPlayer }) => {
-	const [currentShipIndex, setCurrentShipIndex] = useState(0);
+const ShipPlacement = ({ user, gameId, playerNum }) => {
 	const [orientation, setOrientation] = useState("horizontal");
-	const [shipsPlaced, setShipsPlaced] = useState([]);
+	const [shipsLeft, setShipsLeft] = useState([0, 1, 2, 3, 4]);
+	const [gridData, setGridData] = useState({});
+	const [gameDoc, isGameDocLoading] = useDocumentData(
+		doc(db, "Game", gameId)
+	);
+	const shipString = isGameDocLoading
+		? ""
+		: playerNum === 0
+		? gameDoc.ships1
+		: gameDoc.ships2;
+
+	useEffect(() => {
+		let tempShipString = shipString;
+		const newGridData = {};
+		while (tempShipString.length > 0) {
+			const shipLength = tempShipString.at(0);
+			const shipCoords = tempShipString.slice(1, shipLength * 2 + 1);
+			for (let i = 0; i < shipLength; i++) {
+				newGridData[
+					`${shipCoords.at(i * 2)}${shipCoords.at(i * 2 + 1)}`
+				] = "ship";
+			}
+			tempShipString = tempShipString.slice(shipLength * 2 + 1);
+		}
+		console.log(newGridData);
+		setGridData(newGridData);
+	}, [gameDoc, shipString, setGridData]);
 
 	const handleNextShip = () => {
-		let newIndex = currentShipIndex;
-		while (shipsPlaced.includes(newIndex)) {
-			newIndex =
-				currentShipIndex < shipTypes.length - 1
-					? currentShipIndex + 1
-					: 0;
-		}
-		setCurrentShipIndex(newIndex);
+		setShipsLeft((prevShipsLeft) => {
+			const newShipsLeft = [...prevShipsLeft.slice(1), prevShipsLeft[0]];
+			return newShipsLeft;
+		});
 	};
 
 	const toggleOrientation = () => {
@@ -32,36 +56,48 @@ const ShipPlacement = ({ user, gameId, isPlayer }) => {
 		placeShip({
 			user,
 			gameId,
-			shipType: shipTypes[currentShipIndex],
+			shipType: shipTypes[shipsLeft[0]],
 			position,
 			orientation,
 		}).then((result) => {
-			if (result === 1) {
-				shipsPlaced.push(currentShipIndex);
-				handleNextShip();
-			} else console.error("Failed to place ship on the grid.");
+			if (result === 1)
+				setShipsLeft((prevShipsLeft) => {
+					return prevShipsLeft.slice(1);
+				});
+			else console.error("Failed to place ship on the grid.");
 		});
 	};
 
-	let shipName = shipTypes[currentShipIndex];
-	shipName = shipName.charAt(0).toUpperCase() + shipName.slice(1);
+	let shipName = null;
+
+	if (shipsLeft.length > 0) {
+		shipName = shipTypes[shipsLeft[0]];
+		shipName = shipName.charAt(0).toUpperCase() + shipName.slice(1);
+	}
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.shipPlacement}>
 			<div style={{ flex: 2 }}>
 				<div className={styles.shipDisplay}>
-					<h2>Place Your Ships</h2>
-					<h3>Ship: {shipName}</h3>
-					<h4>
-						Size: {SHIP_TYPES[shipTypes[currentShipIndex]]} units
-					</h4>
-					<h5>Orientation: {orientation}</h5>
-					<button onClick={toggleOrientation}>
-						Toggle Orientation
-					</button>
-					<button onClick={handleNextShip}>Next Ship</button>
+					{shipsLeft.length > 0 ? (
+						<>
+							<h2>Place Your Ships</h2>
+							<h3>Ship: {shipName}</h3>
+							<h4>
+								Size: {SHIP_TYPES[shipTypes[shipsLeft[0]]]}{" "}
+								units
+							</h4>
+							<h5>Orientation: {orientation}</h5>
+							<button onClick={toggleOrientation}>
+								Toggle Orientation
+							</button>
+							<button onClick={handleNextShip}>Next Ship</button>
+						</>
+					) : (
+						<h2>All Ships Placed, Waiting for opponent</h2>
+					)}
 				</div>
-				<Grid handleGridClick={handleCellClick} />
+				<Grid handleGridClick={handleCellClick} gridData={gridData} />
 			</div>
 			<div style={{ flex: 1 }}>
 				<div style={{ flex: 1 }}>

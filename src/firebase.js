@@ -125,7 +125,8 @@ const newGame = async ({ user, gameName, timer }) => {
 			timer = 30;
 			break;
 	}
-	if (gameName === "")
+	const matches = obscenityMatcher.getAllMatches(gameName);
+	if (gameName === "" || matches.length > 0)
 		gameName = `The ${uniqueNamesGenerator({
 			dictionaries: [colors, adjectives, languages],
 			separator: " ",
@@ -163,7 +164,6 @@ const newGame = async ({ user, gameName, timer }) => {
 	});
 };
 const joinGame = async ({ user, gameId, isPlayer }) => {
-	console.log({ user, gameId, isPlayer });
 	if (isPlayer) {
 		updateDoc(doc(db, "Game", gameId), {
 			players: arrayUnion(user.uid),
@@ -183,23 +183,21 @@ const joinGame = async ({ user, gameId, isPlayer }) => {
 	}
 };
 const leaveGame = async ({ user, gameId, isLose }) => {
-	if (isLose) {
-		updateDoc(doc(db, "Game", gameId), {
-			players: arrayRemove(user.uid),
-		});
+	updateDoc(doc(db, "Game", gameId), {
+		players: arrayRemove(user.uid),
+		spectate: arrayRemove(user.uid),
+	});
+
+	if (isLose)
 		updateDoc(doc(db, "User", user.uid), {
 			currentGame: "",
 			loses: increment(1),
 			gamesPlayed: 0,
 		});
-	} else {
-		updateDoc(doc(db, "Game", gameId), {
-			spectate: arrayRemove(user.uid),
-		});
+	else
 		updateDoc(doc(db, "User", user.uid), {
 			currentGame: "",
 		});
-	}
 };
 //#endregion
 
@@ -209,14 +207,19 @@ const getShips = async ({ gameId, playerNum }) => {
 	const ships = [];
 	if (docSnap.exists()) {
 		const data = docSnap.data();
-		if (playerNum === 0) {
-			for (let i = 0; i < data.ships1X.length; i++) {
-				ships.push([Number(data.ships1X[i]), Number(data.ships1Y[i])]);
+		let shipString = "";
+		if (playerNum === 0) shipString = data.ships1;
+		else if (playerNum === 1) shipString = data.ships2;
+		while (shipString.length > 0) {
+			const shipLength = shipString.at(0);
+			const shipCoords = shipString.slice(1, shipLength * 2 + 1);
+			for (let i = 0; i < shipLength; i++) {
+				ships.push([
+					Number(shipCoords.at(i * 2)),
+					Number(shipCoords.at(i * 2 + 1)),
+				]);
 			}
-		} else if (playerNum === 1) {
-			for (let i = 0; i < data.ships2X.length; i++) {
-				ships.push([Number(data.ships2X[i]), Number(data.ships2Y[i])]);
-			}
+			shipString = shipString.slice(shipLength * 2 + 1);
 		}
 	}
 	return ships;
@@ -231,7 +234,6 @@ const checkHit = ({ hit, ships }) => {
 const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	//return -1 if fail
 	//return 1 if succeed
-	console.log({ shipType, position, orientation });
 	if (!SHIP_TYPES.hasOwnProperty(shipType)) return -1;
 	if (orientation !== "horizontal" && orientation !== "vertical") return -1;
 	if (position[0] < 0 || position[1] < 0) return -1;
@@ -241,9 +243,8 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	} else {
 		if (position[1] + shipSize >= GRID_SIZE) return -1;
 	}
-	const { playerNum } = checkTurn({ user, gameId });
-	const ships = await getShips({ gameId, playerNum });
-	console.log(ships);
+	const { playerNum } = await checkTurn({ user, gameId });
+	const oldShips = await getShips({ gameId, playerNum });
 
 	const shipCoords = [];
 	if (orientation === "horizontal") {
@@ -255,34 +256,33 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 			shipCoords.push([position[0], position[1] + i]);
 		}
 	}
-	console.log(shipCoords);
 
 	const isValid = shipCoords.every((coord) => {
-		return !checkHit({ hit: coord, ships });
+		return !checkHit({ hit: coord, ships: oldShips });
 	});
 	if (!isValid) return -1;
-
-	const shipX = "";
-	const shipY = "";
-
-	shipCoords.forEach((coord) => {
-		shipX.concat(coord[0]);
-		shipY.concat(coord[1]);
-	});
 
 	const docSnap = await getDoc(doc(db, "Game", gameId));
 	if (docSnap.exists()) {
 		const data = docSnap.data();
-		if (data.players[0] === user.uid) {
+		let shipString = "";
+		if (playerNum === 0) shipString = data.ships1;
+		else if (playerNum === 1) shipString = data.ships2;
+
+		let newShips = shipString.concat(shipCoords.length);
+
+		shipCoords.forEach((coord) => {
+			newShips = newShips.concat(coord[0], coord[1]);
+		});
+
+		if (playerNum === 0) {
 			await updateDoc(doc(db, "Game", gameId), {
-				ship1X: shipX,
-				ship1Y: shipY,
+				ships1: newShips,
 			});
 			return 1;
-		} else if (data.players[1] === user.uid) {
+		} else if (playerNum === 1) {
 			await updateDoc(doc(db, "Game", gameId), {
-				ship2X: shipX,
-				ship2Y: shipY,
+				ships2: newShips,
 			});
 			return 1;
 		}
@@ -307,6 +307,7 @@ const checkTurn = async ({ user, gameId }) => {
 				: -1;
 		isCurrent = data.players[data.currentPlayer] === user.uid;
 	}
+
 	return { playerNum, isCurrent };
 };
 

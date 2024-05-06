@@ -31,11 +31,13 @@ const Grid = ({ handleGridClick, gridData }) => {
 				const cellClick = () => {
 					handleGridClick([i, rowI]);
 				};
+				const cellId = `${i}${rowI}`;
 				row.push(
 					<Cell
-						key={`${i}${rowI}`}
-						tdKey={`${i}${rowI}`}
+						key={cellId}
+						tdKey={cellId}
 						handleClick={cellClick}
+						// className={gridData[cellId]}
 					/>
 				);
 			}
@@ -49,7 +51,7 @@ const Grid = ({ handleGridClick, gridData }) => {
 				</tr>
 			);
 		},
-		[handleGridClick]
+		[gridData, handleGridClick]
 	);
 
 	const buildBody = useCallback(() => {
