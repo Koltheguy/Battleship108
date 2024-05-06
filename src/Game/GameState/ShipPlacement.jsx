@@ -36,8 +36,10 @@ const ShipPlacement = ({ user, gameId, isPlayer }) => {
 			position,
 			orientation,
 		}).then((result) => {
-			if (result === 1) handleNextShip();
-			else console.error("Failed to place ship on the grid.");
+			if (result === 1) {
+				shipsPlaced.push(currentShipIndex);
+				handleNextShip();
+			} else console.error("Failed to place ship on the grid.");
 		});
 	};
 
@@ -70,7 +72,7 @@ const ShipPlacement = ({ user, gameId, isPlayer }) => {
 						buttonText={"Leave"}
 					/>
 				</div>
-				<div style={{ flex: 1 }}>Bottom Right</div>
+				<div style={{ flex: 1 }}></div>
 			</div>
 		</div>
 	);

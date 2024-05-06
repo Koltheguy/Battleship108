@@ -6,7 +6,7 @@ import {
 	useDocumentData,
 	useCollectionData,
 } from "react-firebase-hooks/firestore";
-import { db, auth, changeUserName } from "../firebase";
+import { db, auth, changeUserName, joinGame } from "../firebase";
 import NewGame from "./NewGame";
 import Game from "../Game/Game";
 import styles from "./Lobby.module.css";
@@ -36,6 +36,14 @@ const Lobby = () => {
 
 	const handleSignout = (event) => {
 		signOut(auth);
+	};
+
+	const handleJoin = (event) => {
+		joinGame({
+			user,
+			gameId: event.target.id,
+			isPlayer: Number(event.target.value) < 2,
+		});
 	};
 
 	const [username, setUsername] = useState(displayName);
@@ -120,6 +128,9 @@ const Lobby = () => {
 									<td>
 										<button
 											className={`${styles.pureMaterial} ${styles.join}`}
+											id={item.id}
+											value={item.players.length}
+											onClick={handleJoin}
 										>
 											Join
 										</button>

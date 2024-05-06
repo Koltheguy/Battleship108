@@ -144,36 +144,43 @@ const newGame = async ({ user, gameName, timer }) => {
 		currentPlayer: 0,
 		timeStarted: serverTimestamp(),
 		winner: "",
+
 		lives1: LIVES_TOTAL,
-		visible1X: "",
-		visible1Y: "",
-		ships1X: "",
-		ships1Y: "",
+		visible1: "",
+		ships1: "",
 
 		lives2: LIVES_TOTAL,
-		visible2X: "",
-		visible2Y: "",
-		ships2X: "",
-		ships2Y: "",
+		visible2: "",
+		ships2: "",
 	});
 
 	const gameId = docRef.id;
-	// console.log(gameId);
+	updateDoc(doc(db, "Game", gameId), {
+		id: gameId,
+	});
 	updateDoc(doc(db, "User", user.uid), {
 		currentGame: gameId,
 	});
 };
 const joinGame = async ({ user, gameId, isPlayer }) => {
-	if (isPlayer)
+	console.log({ user, gameId, isPlayer });
+	if (isPlayer) {
 		updateDoc(doc(db, "Game", gameId), {
 			players: arrayUnion(user.uid),
 			currentGame: gameId,
 		});
-	else
+		updateDoc(doc(db, "User", user.uid), {
+			currentGame: gameId,
+		});
+	} else {
 		updateDoc(doc(db, "Game", gameId), {
 			spectate: arrayUnion(user.uid),
 			currentGame: gameId,
 		});
+		updateDoc(doc(db, "User", user.uid), {
+			currentGame: gameId,
+		});
+	}
 };
 const leaveGame = async ({ user, gameId, isPlayer }) => {
 	if (isPlayer) {

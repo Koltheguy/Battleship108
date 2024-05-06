@@ -3,7 +3,7 @@
 	height: 100%;
 }
 
-table {
+.grid table {
 	height: 100%;
 	aspect-ratio: 1;
 	border-collapse: collapse;
@@ -19,8 +19,8 @@ table {
 	border: none;
 }
 
-th,
-td {
+.grid th,
+.grid td {
 	overflow: hidden;
 	border: 1px solid #1eb980;
 }
