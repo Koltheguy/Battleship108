@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Press+Start+2P&display=swap");
 /* * {
     font-family: "Roboto", sans-serif; 
     color: #FEFEFF;
@@ -14,108 +14,108 @@
 } */
 
 body {
-    font-family: "Roboto", sans-serif;
-    color: #FEFEFF;
-    background-color: #26272E;
-    width: 100%;
-    overflow-x: hidden;
+	font-family: "Roboto", sans-serif;
+	color: #fefeff;
+	background-color: #26272e;
+	width: 100%;
+	overflow-x: hidden;
 }
 
 .header {
-    text-align: center;
-    
-    /* color: #c1c1c6; */
-    color: #1eb980;
-    font-family: "Press Start 2P";
-    text-transform: uppercase;
+	text-align: center;
+
+	/* color: #c1c1c6; */
+	color: #1eb980;
+	font-family: "Press Start 2P";
+	text-transform: uppercase;
 }
 
 .user {
-    margin-top: 0rem;
-    margin-right: 80rem;
-    font-family: "Roboto", sans-serif;
-    /* background-color: #2C2C37; */
-    color: #1eb980;
+	margin-top: 0rem;
+	margin-right: 80rem;
+	font-family: "Roboto", sans-serif;
+	/* background-color: #2C2C37; */
+	color: #1eb980;
 }
 
 .input {
-    background-color: #4c4c55;
-    border: none;
-    border-radius: 4px;
-    font-family: "Roboto", sans-serif;
-    color: rgb(235, 231, 231);
-    padding-left: 10px;
-    max-width: 113px;
+	background-color: #4c4c55;
+	border: none;
+	border-radius: 4px;
+	font-family: "Roboto", sans-serif;
+	color: rgb(235, 231, 231);
+	padding-left: 10px;
+	max-width: 113px;
 }
 
 .button {
-    margin-top: 4rem;
-    margin-left: 77rem;
-    margin-bottom: 2rem;
-    font-family: "Roboto", sans-serif;
+	margin-top: 4rem;
+	margin-left: 77rem;
+	margin-bottom: 2rem;
+	font-family: "Roboto", sans-serif;
 }
 
 .signOut {
-    color: white;
-    background-color: #1eb980;
-    margin-left: 1rem;
-    font-family: "Roboto", sans-serif;
+	color: white;
+	background-color: #1eb980;
+	margin-left: 1rem;
+	font-family: "Roboto", sans-serif;
 }
 
 .newGame {
-    color: white;
-    background-color: #1eb980;
-    font-family: "Roboto", sans-serif;
-    /* margin-top: 5rem; */
-    /* margin-top: 5rem;
+	color: white;
+	background-color: #1eb980;
+	font-family: "Roboto", sans-serif;
+	/* margin-top: 5rem; */
+	/* margin-top: 5rem;
     margin-bottom: 2rem;
     margin-right: 80rem; */
 }
 
 .join {
-    color: #1eb980;
-    /* background-color: white; */
-    background-color: none;
-    font-family: "Roboto", sans-serif;
-    background-color: #26272E;
+	color: #1eb980;
+	/* background-color: white; */
+	background-color: none;
+	font-family: "Roboto", sans-serif;
+	background-color: #26272e;
 }
 
 .pureMaterial {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 4px;
-    padding: 0 16px;
-    min-width: 64px;
-    height: 36px;
-    vertical-align: middle;
-    text-align: center;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 36px;
-    overflow: hidden;
-    outline: none;
-    cursor: pointer;
-    transition: box-shadow 0.2s;
+	position: relative;
+	display: inline-block;
+	box-sizing: border-box;
+	border: none;
+	border-radius: 4px;
+	padding: 0 16px;
+	min-width: 64px;
+	height: 36px;
+	vertical-align: middle;
+	text-align: center;
+	text-overflow: ellipsis;
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 36px;
+	overflow: hidden;
+	outline: none;
+	cursor: pointer;
+	transition: box-shadow 0.2s;
 }
 
-table {
-    /* margin-top: 4rem;
+.lobby table {
+	/* margin-top: 4rem;
     margin-left: 25rem; */
-    margin: auto;
-    text-align: justify;
-    color: white;
-    font-family: "Roboto", sans-serif;
+	margin: auto;
+	text-align: justify;
+	color: white;
+	font-family: "Roboto", sans-serif;
 }
 
-th {
-    text-align: center;
-    padding-bottom: 1.5rem;
+.lobby th {
+	text-align: center;
+	padding-bottom: 1.5rem;
 }
 
-td {
-    padding: 0 4rem; 
+.lobby td {
+	padding: 0 4rem;
 }

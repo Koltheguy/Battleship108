@@ -69,7 +69,7 @@ const Lobby = () => {
 		return <NewGame user={user} toggleNewGamePage={toggleNewGamePage} />;
 	} else
 		return (
-			<div className={styles.body}>
+			<div className={`${styles.body} ${styles.lobby}`}>
 				<div className={styles.user}>
 					username: {username}
 					<br />

@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./Cell.module.css";
 
-const Cell = ({ handleClick, initClassName }) => {
-	if (!initClassName) initClassName = "";
-	const [className, setClassName] = useState(initClassName);
+const Cell = ({ tdKey, handleClick, className }) => {
+	if (!className) className = "";
 
-	return <div className={className} onClick={handleClick}></div>;
+	return (
+		<td
+			key={tdKey}
+			className={`${styles.cell} ${styles[className]}`}
+			onClick={handleClick}
+		></td>
+	);
 };
 
 export default Cell;

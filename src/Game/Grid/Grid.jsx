@@ -16,7 +16,7 @@ const Grid = ({ handleGridClick }) => {
 		return (
 			<thead>
 				<tr className={styles.coordNums}>
-					<th className={styles.emptycell} key={`colOrigin`}></th>
+					<th className={styles.emptyCell} key={`colOrigin`}></th>
 					{headers}
 				</tr>
 			</thead>
@@ -28,15 +28,20 @@ const Grid = ({ handleGridClick }) => {
 			const row = [];
 
 			for (let i = 0; i < 10; i++) {
+				const cellClick = () => {
+					handleGridClick([i, rowI]);
+				};
 				row.push(
-					<td key={`row${rowI}`}>
-						<Cell handleGridClick={handleGridClick(rowI, i)} />
-					</td>
+					<Cell
+						key={`${i}${rowI}`}
+						tdKey={`${i}${rowI}`}
+						handleClick={cellClick}
+					/>
 				);
 			}
 
 			return (
-				<tr className={styles.coordNums}>
+				<tr className={styles.coordNums} key={`row${rowI}`}>
 					<th scope="row" key={`rowOrigin`}>
 						{String.fromCharCode(65 + rowI)}
 					</th>
@@ -57,61 +62,10 @@ const Grid = ({ handleGridClick }) => {
 	}, [buildRow]);
 
 	return (
-		<div className={styles.battlefield}>
+		<div className={styles.grid}>
 			<table>
 				{xHeader()}
 				{buildBody()}
-			</table>
-		</div>
-	);
-
-	const [gridData, setGridData] = useState(
-		Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0))
-	);
-
-	const updateGrid = (row, col) => {
-		const newGridData = [...gridData];
-		newGridData[row][col] = newGridData[row][col] === 0 ? 1 : 0;
-		setGridData(newGridData);
-	};
-
-	return (
-		<div className={styles.battlefield}>
-			<table>
-				<tbody>
-					<tr>
-						<th className={styles.emptycell}></th>
-						{Array.from({ length: 10 }, (_, index) => (
-							<th className={styles.coordNums} key={index}>
-								{index + 1}
-							</th>
-						))}
-					</tr>
-					{gridData.map((row, rowIndex) => (
-						<tr key={rowIndex}>
-							<th className={styles.coordLetters}>
-								{String.fromCharCode(65 + rowIndex)}
-							</th>
-							{row.map((cell, colIndex) => (
-								<td key={colIndex} className={styles.gCells}>
-									<Cell
-										// key={colIndex}
-										className={`${styles.cell} ${
-											colIndex === 0
-												? styles.firstColumn
-												: ""
-										}`}
-										onClick={() =>
-											updateGrid(rowIndex, colIndex)
-										}
-									>
-										{cell}
-									</Cell>
-								</td>
-							))}
-						</tr>
-					))}
-				</tbody>
 			</table>
 		</div>
 	);

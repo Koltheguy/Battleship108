@@ -145,16 +145,16 @@ const newGame = async ({ user, gameName, timer }) => {
 		timeStarted: serverTimestamp(),
 		winner: "",
 		lives1: LIVES_TOTAL,
-		visible1X: [],
-		visible1Y: [],
-		ships1X: [],
-		ships1Y: [],
+		visible1X: "",
+		visible1Y: "",
+		ships1X: "",
+		ships1Y: "",
 
 		lives2: LIVES_TOTAL,
-		visible2X: [],
-		visible2Y: [],
-		ships2X: [],
-		ships2Y: [],
+		visible2X: "",
+		visible2Y: "",
+		ships2X: "",
+		ships2Y: "",
 	});
 
 	const gameId = docRef.id;
@@ -204,18 +204,18 @@ const getShips = async ({ gameId, playerNum }) => {
 		const data = docSnap.data();
 		if (playerNum === 0) {
 			for (let i = 0; i < data.ships1X.length; i++) {
-				ships.push([data.ships1X[i], data.ships1Y[i]]);
+				ships.push([Number(data.ships1X[i]), Number(data.ships1Y[i])]);
 			}
 		} else if (playerNum === 1) {
 			for (let i = 0; i < data.ships2X.length; i++) {
-				ships.push([data.ships2X[i], data.ships2Y[i]]);
+				ships.push([Number(data.ships2X[i]), Number(data.ships2Y[i])]);
 			}
 		}
 	}
 	return ships;
 };
 
-const checkHit = async ({ hit, ships }) => {
+const checkHit = ({ hit, ships }) => {
 	return ships.some((ship) => {
 		return ship[0] === hit[0] && ship[1] === hit[1];
 	});
@@ -224,6 +224,7 @@ const checkHit = async ({ hit, ships }) => {
 const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	//return -1 if fail
 	//return 1 if succeed
+	console.log({ shipType, position, orientation });
 	if (!SHIP_TYPES.hasOwnProperty(shipType)) return -1;
 	if (orientation !== "horizontal" && orientation !== "vertical") return -1;
 	if (position[0] < 0 || position[1] < 0) return -1;
@@ -234,8 +235,8 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 		if (position[1] + shipSize >= GRID_SIZE) return -1;
 	}
 	const { playerNum } = checkTurn({ user, gameId });
-	const ships = getShips({ gameId, playerNum });
-	if (ships.length < 1) return -1;
+	const ships = await getShips({ gameId, playerNum });
+	console.log(ships);
 
 	const shipCoords = [];
 	if (orientation === "horizontal") {
@@ -247,18 +248,19 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 			shipCoords.push([position[0], position[1] + i]);
 		}
 	}
+	console.log(shipCoords);
 
 	const isValid = shipCoords.every((coord) => {
 		return !checkHit({ hit: coord, ships });
 	});
 	if (!isValid) return -1;
 
-	const shipX = [];
-	const shipY = [];
+	const shipX = "";
+	const shipY = "";
 
 	shipCoords.forEach((coord) => {
-		shipX.push(coord[0]);
-		shipY.push(coord[1]);
+		shipX.concat(coord[0]);
+		shipY.concat(coord[1]);
 	});
 
 	const docSnap = await getDoc(doc(db, "Game", gameId));
@@ -266,14 +268,14 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 		const data = docSnap.data();
 		if (data.players[0] === user.uid) {
 			await updateDoc(doc(db, "Game", gameId), {
-				ship1X: arrayUnion(shipX),
-				ship1Y: arrayUnion(shipY),
+				ship1X: shipX,
+				ship1Y: shipY,
 			});
 			return 1;
 		} else if (data.players[1] === user.uid) {
 			await updateDoc(doc(db, "Game", gameId), {
-				ship2X: arrayUnion(shipX),
-				ship2Y: arrayUnion(shipY),
+				ship2X: shipX,
+				ship2Y: shipY,
 			});
 			return 1;
 		}

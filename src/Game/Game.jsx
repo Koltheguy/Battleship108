@@ -19,9 +19,10 @@ const Game = ({ user, gameId, isPlayer }) => {
 	);
 
 	let gameState = false;
+	if (!isGameDocLoading && !gameDoc) leaveGame({ user, gameId, isPlayer });
+
 	if (!isGameDocLoading && gameDoc && gameDoc.gameState !== "")
 		gameState = gameDoc.gameState;
-	gameState = 2;
 
 	let renderGame = null;
 	switch (gameState) {
@@ -31,8 +32,7 @@ const Game = ({ user, gameId, isPlayer }) => {
 					user={user}
 					gameId={gameId}
 					playerNum={playerNum}
-					isCurrent={isCurrent}
-					player={isPlayer}
+					isPlayer={isPlayer}
 				/>
 			);
 			break;
@@ -45,7 +45,7 @@ const Game = ({ user, gameId, isPlayer }) => {
 					<LeaveButton
 						user={user}
 						gameId={gameId}
-						player={isPlayer}
+						isPlayer={isPlayer}
 						buttonText={isPlayer ? "Forefeit" : "Leave"}
 					/>
 				</>

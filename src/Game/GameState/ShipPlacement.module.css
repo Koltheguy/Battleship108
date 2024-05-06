@@ -1,4 +1,16 @@
-/* .shipDisplay {
-  margin-left : -45rem;
-  margin-bottom: 30rem;
-} */
+.container {
+	display: flex;
+	height: 100vh;
+	width: 100vw;
+}
+
+h2,
+h3,
+h4,
+h5 {
+	color: #1eb980;
+}
+
+button {
+	background-color: #1eb980;
+}

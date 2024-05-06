@@ -4,17 +4,22 @@ import LeaveButton from "../LeaveButton";
 import styles from "./ShipPlacement.module.css";
 import { SHIP_TYPES, placeShip } from "../../firebase.js";
 
-const ShipPlacement = ({ user, gameId, currentPlayer, isCurrent, player }) => {
+const shipTypes = Object.keys(SHIP_TYPES);
+
+const ShipPlacement = ({ user, gameId, isPlayer }) => {
 	const [currentShipIndex, setCurrentShipIndex] = useState(0);
 	const [orientation, setOrientation] = useState("horizontal");
-	const shipTypes = Object.keys(SHIP_TYPES);
-	const [selectedPosition, setSelectedPosition] = useState(null);
+	const [shipsPlaced, setShipsPlaced] = useState([]);
 
 	const handleNextShip = () => {
-		console.log("handleNextShip GOT CALLED");
-		setCurrentShipIndex((prevIndex) =>
-			prevIndex < shipTypes.length - 1 ? prevIndex + 1 : 0
-		);
+		let newIndex = currentShipIndex;
+		while (shipsPlaced.includes(newIndex)) {
+			newIndex =
+				currentShipIndex < shipTypes.length - 1
+					? currentShipIndex + 1
+					: 0;
+		}
+		setCurrentShipIndex(newIndex);
 	};
 
 	const toggleOrientation = () => {
@@ -23,60 +28,50 @@ const ShipPlacement = ({ user, gameId, currentPlayer, isCurrent, player }) => {
 		);
 	};
 
-	const handleCellClick = (row, col) => {
-		console.log("handleCellClick GOT CALLED");
-		if (selectedPosition !== null) {
-			placeShip({
-				user: user,
-				gameId: gameId,
-				shipType: shipTypes[currentShipIndex],
-				position: selectedPosition,
-				orientation: orientation,
-			}).then((result) => {
-				if (result === 1) {
-					console.log("IT WORKED");
-					setSelectedPosition(null);
-					handleNextShip();
-				} else {
-					console.error("Failed to place ship on the grid.");
-				}
-			});
-		} else {
-			setSelectedPosition([row, col]);
-		}
+	const handleCellClick = (position) => {
+		placeShip({
+			user,
+			gameId,
+			shipType: shipTypes[currentShipIndex],
+			position,
+			orientation,
+		}).then((result) => {
+			if (result === 1) handleNextShip();
+			else console.error("Failed to place ship on the grid.");
+		});
 	};
 
+	let shipName = shipTypes[currentShipIndex];
+	shipName = shipName.charAt(0).toUpperCase() + shipName.slice(1);
+
 	return (
-		<div>
-			<h2 style={{ color: "#1eb980" }}>Place Your Ships</h2>
-			<div className={styles.shipDisplay}>
-				<h3 style={{ color: "#1eb980" }}>
-					Ship: {shipTypes[currentShipIndex]}
-				</h3>
-				<h4 style={{ color: "#1eb980" }}>
-					Size: {SHIP_TYPES[shipTypes[currentShipIndex]]}
-				</h4>
-				<h5 style={{ color: "#1eb980" }}>Orientation: {orientation}</h5>
-				<button
-					style={{ backgroundColor: "#1eb980" }}
-					onClick={toggleOrientation}
-				>
-					Toggle Orientation
-				</button>
-				<button
-					style={{ backgroundColor: "#1eb980" }}
-					onClick={handleNextShip}
-				>
-					Next Ship
-				</button>
+		<div className={styles.container}>
+			<div style={{ flex: 2 }}>
+				<div className={styles.shipDisplay}>
+					<h2>Place Your Ships</h2>
+					<h3>Ship: {shipName}</h3>
+					<h4>
+						Size: {SHIP_TYPES[shipTypes[currentShipIndex]]} units
+					</h4>
+					<h5>Orientation: {orientation}</h5>
+					<button onClick={toggleOrientation}>
+						Toggle Orientation
+					</button>
+					<button onClick={handleNextShip}>Next Ship</button>
+				</div>
+				<Grid handleGridClick={handleCellClick} />
 			</div>
-			<Grid handleGridClick={handleCellClick} />
-			<LeaveButton
-				user={user}
-				gameId={gameId}
-				player={player}
-				buttonText={"Leave"}
-			/>
+			<div style={{ flex: 1 }}>
+				<div style={{ flex: 1 }}>
+					<LeaveButton
+						user={user}
+						gameId={gameId}
+						player={isPlayer}
+						buttonText={"Leave"}
+					/>
+				</div>
+				<div style={{ flex: 1 }}>Bottom Right</div>
+			</div>
 		</div>
 	);
 };
