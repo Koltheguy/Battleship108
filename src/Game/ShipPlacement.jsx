@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Grid from "./Grid";
+import Grid from "./Grid/Grid";
 import LeaveButton from "./LeaveButton";
 import styles from "./ShipPlacement.module.css";
 import { SHIP_TYPES, placeShip } from "../firebase.js";

@@ -1,6 +1,6 @@
 // import React, { useState } from "react";
 import React from "react";
-import Grid from "./Grid";
+import Grid from "./Grid/Grid";
 import ChatBox from "./ChatBox";
 import UsersConnectedBox from "./UsersConnectedBox";
 import LeaveButton from "./LeaveButton";
