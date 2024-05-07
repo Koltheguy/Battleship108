@@ -1,5 +1,5 @@
 import React from "react";
-import "./LeaveButton.module.css";
+import styles from "./LeaveButton.module.css";
 import { leaveGame } from "../firebase";
 
 const LeaveButton = ({ user, gameId, isLose, buttonText }) => {
@@ -7,7 +7,7 @@ const LeaveButton = ({ user, gameId, isLose, buttonText }) => {
 		leaveGame({ user, gameId, isLose });
 	};
 
-	return <button onClick={handleClick}>{buttonText}</button>;
+	return <button className={styles.leaveButton} onClick={handleClick}>{buttonText}</button>;
 };
 
 export default LeaveButton;

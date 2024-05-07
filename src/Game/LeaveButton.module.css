@@ -1,8 +1,8 @@
-button {
+.leaveButton button {
 	background-color: #1eb980;
 	color: white;
 }
 
-button:hover {
+.leaveButton button:hover {
 	background-color: #17a668;
 }
