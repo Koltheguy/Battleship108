@@ -7,7 +7,7 @@ function GameOver({ user, gameId, gameOverMessage }) {
 	return (
 		<div className={styles.gameOver}>
 			<h1>Game Over</h1>
-			<h2>{gameOverMessage}</h2>
+			<h2 className={styles.center}>{gameOverMessage}</h2>
 			<LeaveButton
 				user={user}
 				gameId={gameId}

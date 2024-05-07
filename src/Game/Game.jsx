@@ -10,6 +10,7 @@ import LeaveButton from "./LeaveButton";
 import Spectate from "./Spectate";
 import ShipPlacement from "./GameState/ShipPlacement";
 import GameOver from "./GameState/GameOver";
+import Gameplay from "./GameState/Gameplay";
 
 const Game = ({ user, gameId }) => {
 	const [gameDoc, isGameDocLoading] = useDocumentData(
@@ -79,15 +80,12 @@ const Game = ({ user, gameId }) => {
 		case 1:
 			renderGame = (
 				<>
-					{/* <Grid />
-					<ChatBox />
-					<UsersConnectedBox /> */}
-					{isCurrent}
-					<LeaveButton
+					<Gameplay
 						user={user}
 						gameId={gameId}
-						isLose={isPlayer}
-						buttonText={isPlayer ? "Forefeit" : "Leave"}
+						playerNum={playerNum}
+						gameName={gameName}
+						isCurrent={isCurrent}
 					/>
 				</>
 			);

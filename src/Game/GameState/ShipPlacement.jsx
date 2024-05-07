@@ -85,11 +85,11 @@ const ShipPlacement = ({ user, gameId, playerNum, gameName }) => {
 
 	return (
 		<div className={styles.shipPlacement}>
-			<div style={{ flex: 2 }}>
+			<div style={{ flex: 3 }}>
 				<h1>{gameName}</h1>
 				<Grid handleGridClick={handleCellClick} gridData={gridData} />
 			</div>
-			<div style={{ flex: 1 }}>
+			<div style={{ flex: 2 }}>
 				<div style={{ flex: 1 }}>
 					<div className={styles.shipDisplay}>
 						{shipsLeft.length > 0 ? (
@@ -119,7 +119,10 @@ const ShipPlacement = ({ user, gameId, playerNum, gameName }) => {
 						buttonText={"Leave"}
 					/>
 				</div>
-				<div style={{ flex: 1 }}></div>
+				<div style={{ flex: 1 }}>
+					<h3>Reference</h3>
+					<Grid handleGridClick={() => {}} gridData={gridData} />
+				</div>
 			</div>
 		</div>
 	);

@@ -149,11 +149,13 @@ const newGame = async ({ user, gameName, timer }) => {
 		gameOverMessage: "",
 
 		lives1: LIVES_TOTAL,
-		visible1: "",
+		hits1: "",
+		misses1: "",
 		ships1: "",
 
 		lives2: LIVES_TOTAL,
-		visible2: "",
+		hits2: "",
+		misses2: "",
 		ships2: "",
 	});
 
@@ -351,74 +353,32 @@ const checkTurn = async ({ user, gameId }) => {
 	return { playerNum, isCurrent };
 };
 
-const attack = async ({ user, gameId, position }) => {
-	const { playerNum, isCurrent } = checkTurn({ user, gameId });
+const attack = async ({
+	gameId,
+	position,
+	playerNum,
+	isCurrent,
+	hits,
+	misses,
+}) => {
 	if (!isCurrent || playerNum === -1) return -1;
 
-	const ships = getShips({ gameId, playerNum: playerNum === 0 ? 1 : 0 });
+	const ships = getShips({ gameId, playerNum });
 	const isHit = checkHit({ hit: position, ships });
+	const coord = position.join("");
 
-	if (playerNum === 0) {
+	if (isHit) {
 		await updateDoc(doc(db, "Game", gameId), {
 			turn: increment(1),
 			currentPlayer: isHit ? 0 : 1,
 			lastMove: serverTimestamp(),
 
 			lives2: increment(-1),
-			visible2X: arrayUnion(position[0]),
-			visible2Y: arrayUnion(position[1]),
-		});
-	} else if (playerNum === 1) {
-		await updateDoc(doc(db, "Game", gameId), {
-			turn: increment(1),
-			currentPlayer: isHit ? 1 : 0,
-			lastMove: serverTimestamp(),
-
-			lives1: increment(-1),
-			visible1X: arrayUnion(position[0]),
-			visible1Y: arrayUnion(position[1]),
+			visible2: coord,
 		});
 	}
 };
 
-const view = async ({ gameId, playerNum }) => {
-	const docSnap = await getDoc(doc(db, "Game", gameId));
-	const hit = [],
-		miss = [];
-	if (docSnap.exists()) {
-		const data = docSnap.data();
-		if (playerNum === 0) {
-			const ships = getShips({ gameId, playerNum });
-			for (let i = 0; i < data.viewable1X.length; i++) {
-				if (
-					checkHit({
-						hit: [data.visible1X[i], data.visible1Y[i]],
-						ships,
-					})
-				) {
-					hit.push([data.visible1X[i], data.visible1Y[i]]);
-				} else {
-					miss.push([data.visible1X[i], data.visible1Y[i]]);
-				}
-			}
-		} else if (playerNum === 1) {
-			const ships = getShips({ gameId, playerNum });
-			for (let i = 0; i < data.viewable2X.length; i++) {
-				if (
-					checkHit({
-						hit: [data.visible2X[i], data.visible2Y[i]],
-						ships,
-					})
-				) {
-					hit.push([data.visible2X[i], data.visible2Y[i]]);
-				} else {
-					miss.push([data.visible2X[i], data.visible2Y[i]]);
-				}
-			}
-		}
-	}
-	return { hit, miss };
-};
 //#endregion
 
 const sendMessage = async ({ user, message }) => {
@@ -455,9 +415,8 @@ export {
 	getShips,
 	placeShip,
 	setReady,
-	checkTurn,
 	attack,
-	view,
+	checkHit,
 	sendMessage,
 	//delOldGames,
 };
