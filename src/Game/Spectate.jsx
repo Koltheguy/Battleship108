@@ -35,27 +35,31 @@ const Spectate = ({
 		setGridData2({ ...hitGridData, ...missesGridData });
 	}, [setGridData2, hits2, misses2]);
 	return (
-		<div style={{ display: "flex", height: "100vh", width: "100vw" }}>
-			<h1 style={{ textAlign: "center" }}>{gameName}</h1>
-			<LeaveButton
-				user={user}
-				gameId={gameId}
-				isLose={false}
-				buttonText="Back to Lobby"
-			/>
-			<div style={{ flex: 1 }}>
-				<h2>
-					{currentPlayer === 0 ? "WEAPONS READY" : "RELOADING..."}
-				</h2>
-				<Grid handleGridClick={() => {}} gridData={gridData1} />
+		<>
+			<div>
+				<h1 style={{ textAlign: "center" }}>{gameName}</h1>
+				<LeaveButton
+					user={user}
+					gameId={gameId}
+					isLose={false}
+					buttonText="Back to Lobby"
+				/>
 			</div>
-			<div style={{ flex: 1 }}>
-				<h2>
-					{currentPlayer === 1 ? "WEAPONS READY" : "RELOADING..."}
-				</h2>
-				<Grid handleGridClick={() => {}} gridData={gridData2} />
+			<div style={{ display: "flex", height: "100vh", width: "100vw" }}>
+				<div style={{ flex: 1 }}>
+					<h2>
+						{currentPlayer === 0 ? "WEAPONS READY" : "RELOADING..."}
+					</h2>
+					<Grid handleGridClick={() => {}} gridData={gridData1} />
+				</div>
+				<div style={{ flex: 1 }}>
+					<h2>
+						{currentPlayer === 1 ? "WEAPONS READY" : "RELOADING..."}
+					</h2>
+					<Grid handleGridClick={() => {}} gridData={gridData2} />
+				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 
