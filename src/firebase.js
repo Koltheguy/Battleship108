@@ -101,7 +101,7 @@ const initializeUser = async (user) => {
 	if (!snap.data().count) {
 		setDoc(doc(db, "User", user.uid), {
 			wins: 0,
-			loses: 0,
+			losses: 0,
 			gamesPlayed: 0,
 			currentGame: "",
 			isChatBanned: false,
@@ -140,11 +140,13 @@ const newGame = async ({ user, gameName, timer }) => {
 		timer: timer,
 		players: [user.uid],
 		spectate: [],
+		ready: "00",
 		gameState: 0,
 		turn: 0,
 		currentPlayer: 0,
 		timeStarted: serverTimestamp(),
 		winner: "",
+		gameOverMessage: "",
 
 		lives1: LIVES_TOTAL,
 		visible1: "",
@@ -191,12 +193,43 @@ const leaveGame = async ({ user, gameId, isLose }) => {
 	if (isLose)
 		updateDoc(doc(db, "User", user.uid), {
 			currentGame: "",
-			loses: increment(1),
+			losses: increment(1),
 			gamesPlayed: 0,
 		});
 	else
 		updateDoc(doc(db, "User", user.uid), {
 			currentGame: "",
+		});
+};
+const startGame = async ({ gameId, players }) => {
+	await updateDoc(doc(db, "Game", gameId), {
+		gameState: 1,
+	});
+	updateDoc(doc(db, "User", players[0]), {
+		gamesPlayed: increment(1),
+	});
+
+	updateDoc(doc(db, "User", players[1]), {
+		gamesPlayed: increment(1),
+	});
+};
+
+const endGame = async ({ gameId, gameOverMessage, winner, players }) => {
+	updateDoc(doc(db, "Game", gameId), {
+		gameState: 2,
+		gameOverMessage,
+		winner: players[winner],
+	});
+
+	const loser = winner === 0 ? 1 : 0;
+
+	updateDoc(doc(db, "User", players[winner]), {
+		wins: increment(1),
+	});
+
+	if (players.length > 1)
+		updateDoc(doc(db, "User", players[loser]), {
+			losses: increment(1),
 		});
 };
 //#endregion
@@ -238,10 +271,11 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	if (orientation !== "horizontal" && orientation !== "vertical") return -1;
 	if (position[0] < 0 || position[1] < 0) return -1;
 	const shipSize = SHIP_TYPES[shipType];
+	console.log(position);
 	if (orientation === "horizontal") {
-		if (position[0] + shipSize >= GRID_SIZE) return -1;
+		if (position[0] + shipSize > GRID_SIZE) return -1;
 	} else {
-		if (position[1] + shipSize >= GRID_SIZE) return -1;
+		if (position[1] + shipSize > GRID_SIZE) return -1;
 	}
 	const { playerNum } = await checkTurn({ user, gameId });
 	const oldShips = await getShips({ gameId, playerNum });
@@ -289,6 +323,12 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	}
 
 	return -1;
+};
+
+const setReady = ({ gameId, ready }) => {
+	updateDoc(doc(db, "Game", gameId), {
+		ready,
+	});
 };
 //#endregion
 
@@ -409,9 +449,12 @@ export {
 	changeUserName,
 	newGame,
 	joinGame,
+	startGame,
+	endGame,
 	leaveGame,
 	getShips,
 	placeShip,
+	setReady,
 	checkTurn,
 	attack,
 	view,

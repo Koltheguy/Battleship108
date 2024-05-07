@@ -21,6 +21,10 @@ body {
 	overflow-x: hidden;
 }
 
+.stats {
+	text-align: center;
+}
+
 .header {
 	margin: 2rem;
 	text-align: center;

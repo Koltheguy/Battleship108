@@ -70,7 +70,13 @@ const Lobby = () => {
 		// allows only alphanumeric inputs
 		await setUsername(event.target.value.replace(/[^0-9a-zA-Z]+/gi, ""));
 	};
+	let wins = null;
+	let losses = null;
 
+	if (!isUserDocLoading && userDoc) {
+		wins = userDoc.wins;
+		losses = userDoc.losses;
+	}
 	if (!isUserDocLoading && userDoc && userDoc.currentGame !== "") {
 		return <Game user={user} gameId={userDoc.currentGame} />;
 	} else if (isNewGame) {
@@ -79,6 +85,9 @@ const Lobby = () => {
 		return (
 			<div className={`${styles.body} ${styles.lobby}`}>
 				<h1 className={styles.header}>Battleship</h1>
+				<div className={styles.stats}>
+					Wins: {wins} Losses: {losses}
+				</div>
 				<div className={styles.inputs}>
 					Username:{" "}
 					<input
@@ -113,6 +122,7 @@ const Lobby = () => {
 					</thead>
 					<tbody>
 						{!isGameCollectionLoading &&
+							gameCollection.length > 0 &&
 							gameCollection.map((item) => (
 								<tr key={item.gameName + item.createdBy}>
 									<td>{item.gameName}</td>
@@ -134,6 +144,10 @@ const Lobby = () => {
 									</td>
 								</tr>
 							))}
+						{!isGameCollectionLoading &&
+							gameCollection.length < 1 && (
+								<>No Games Found, Make a new one!</>
+							)}
 					</tbody>
 				</table>
 			</div>

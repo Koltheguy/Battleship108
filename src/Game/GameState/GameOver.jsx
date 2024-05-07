@@ -1,17 +1,17 @@
 import React from "react";
-import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./GameOver.module.css";
 import LeaveButton from "../LeaveButton";
 
-function GameOver({ user, gameId, isPlayer }) {
+function GameOver({ user, gameId, gameOverMessage }) {
 	return (
 		<div className={styles.gameOver}>
 			<h1>Game Over</h1>
+			<h2>{gameOverMessage}</h2>
 			<LeaveButton
 				user={user}
 				gameId={gameId}
-				player={isPlayer}
+				isLose={false}
 				buttonText="Back to Lobby"
 			/>
 		</div>

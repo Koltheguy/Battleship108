@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { db, SHIP_TYPES, placeShip } from "../../firebase";
+import { db, SHIP_TYPES, placeShip, setReady } from "../../firebase";
 
 import Grid from "../Grid/Grid";
 import LeaveButton from "../LeaveButton";
@@ -9,13 +9,17 @@ import styles from "./ShipPlacement.module.css";
 
 const shipTypes = Object.keys(SHIP_TYPES);
 
-const ShipPlacement = ({ user, gameId, playerNum }) => {
+const ShipPlacement = ({ user, gameId, playerNum, gameName }) => {
 	const [orientation, setOrientation] = useState("horizontal");
-	const [shipsLeft, setShipsLeft] = useState([0, 1, 2, 3, 4]);
+	const [shipsLeft, setShipsLeft] = useState([0, 1, 2, 3, 4, 5]);
 	const [gridData, setGridData] = useState({});
 	const [gameDoc, isGameDocLoading] = useDocumentData(
 		doc(db, "Game", gameId)
 	);
+
+	let ready = "";
+	if (!isGameDocLoading) ready = gameDoc.ready;
+
 	const shipString = isGameDocLoading
 		? ""
 		: playerNum === 0
@@ -68,38 +72,46 @@ const ShipPlacement = ({ user, gameId, playerNum }) => {
 	};
 
 	let shipName = null;
-
+	console.log(playerNum === 0 ? "1" + ready.at(1) : ready.at(0) + 1);
 	if (shipsLeft.length > 0) {
 		shipName = shipTypes[shipsLeft[0]];
 		shipName = shipName.charAt(0).toUpperCase() + shipName.slice(1);
+	} else {
+		setReady({
+			gameId,
+			ready: playerNum === 0 ? "1" + ready.at(1) : ready.at(0) + 1,
+		});
 	}
 
 	return (
 		<div className={styles.shipPlacement}>
 			<div style={{ flex: 2 }}>
-				<div className={styles.shipDisplay}>
-					{shipsLeft.length > 0 ? (
-						<>
-							<h2>Place Your Ships</h2>
-							<h3>Ship: {shipName}</h3>
-							<h4>
-								Size: {SHIP_TYPES[shipTypes[shipsLeft[0]]]}{" "}
-								units
-							</h4>
-							<h5>Orientation: {orientation}</h5>
-							<button onClick={toggleOrientation}>
-								Toggle Orientation
-							</button>
-							<button onClick={handleNextShip}>Next Ship</button>
-						</>
-					) : (
-						<h2>All Ships Placed, Waiting for opponent</h2>
-					)}
-				</div>
+				<h1>{gameName}</h1>
 				<Grid handleGridClick={handleCellClick} gridData={gridData} />
 			</div>
 			<div style={{ flex: 1 }}>
 				<div style={{ flex: 1 }}>
+					<div className={styles.shipDisplay}>
+						{shipsLeft.length > 0 ? (
+							<>
+								<h2>Place Your Ships</h2>
+								<h3>Ship: {shipName}</h3>
+								<h4>
+									Size: {SHIP_TYPES[shipTypes[shipsLeft[0]]]}{" "}
+									units
+								</h4>
+								<h5>Orientation: {orientation}</h5>
+								<button onClick={toggleOrientation}>
+									Toggle Orientation
+								</button>
+								<button onClick={handleNextShip}>
+									Next Ship
+								</button>
+							</>
+						) : (
+							<h2>All Ships Placed, Waiting for opponent...</h2>
+						)}
+					</div>
 					<LeaveButton
 						user={user}
 						gameId={gameId}
