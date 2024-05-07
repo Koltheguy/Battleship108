@@ -29,11 +29,13 @@ const Game = ({ user, gameId }) => {
 	let hitsSelf;
 	let missesSelf;
 	let gameOverMessage = "";
+	let currentPlayer = -1;
 	if (gameDoc.gameState !== "") {
 		gameState = gameDoc.gameState;
 		isPlayer = gameDoc.players.includes(user.uid);
 		gameName = gameDoc.gameName;
 		playerNum = gameDoc.players[0] === user.uid ? 0 : 1;
+		currentPlayer = gameDoc.currentPlayer;
 		isCurrent = gameDoc.currentPlayer === playerNum;
 		if (gameDoc.currentPlayer === 0) {
 			isReady = gameDoc.gameState === 0 && gameDoc.ready === "11";
@@ -79,7 +81,19 @@ const Game = ({ user, gameId }) => {
 	}
 
 	let renderGame = null;
-	if (!isPlayer) return <Spectate />;
+	if (!isPlayer)
+		return (
+			<Spectate
+				user={user}
+				gameId={gameId}
+				gameName={gameName}
+				hits1={hits}
+				misses1={misses}
+				hits2={hitsSelf}
+				misses2={missesSelf}
+				currentPlayer={currentPlayer}
+			/>
+		);
 	switch (gameState) {
 		case 0:
 			renderGame = (
@@ -93,19 +107,17 @@ const Game = ({ user, gameId }) => {
 			break;
 		case 1:
 			renderGame = (
-				<>
-					<Gameplay
-						user={user}
-						gameId={gameId}
-						playerNum={playerNum}
-						gameName={gameName}
-						isCurrent={isCurrent}
-						hits={hits}
-						misses={misses}
-						hitsSelf={hitsSelf}
-						missesSelf={missesSelf}
-					/>
-				</>
+				<Gameplay
+					user={user}
+					gameId={gameId}
+					playerNum={playerNum}
+					gameName={gameName}
+					isCurrent={isCurrent}
+					hits={hits}
+					misses={misses}
+					hitsSelf={hitsSelf}
+					missesSelf={missesSelf}
+				/>
 			);
 			break;
 		case 2:
