@@ -2,11 +2,6 @@ import React from "react";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { db, leaveGame, startGame, endGame } from "../firebase";
-import LeaveButton from "./LeaveButton";
-
-// import Grid from "./Grid/Grid";
-// import ChatBox from "./ChatBox";
-// import UsersConnectedBox from "./UsersConnectedBox";
 import Spectate from "./Spectate";
 import ShipPlacement from "./GameState/ShipPlacement";
 import GameOver from "./GameState/GameOver";
@@ -29,6 +24,10 @@ const Game = ({ user, gameId }) => {
 	let isReady = false;
 	let isResigned = false;
 	let isWinner = false;
+	let hits;
+	let misses;
+	let hitsSelf;
+	let missesSelf;
 	let gameOverMessage = "";
 	if (gameDoc.gameState !== "") {
 		gameState = gameDoc.gameState;
@@ -41,6 +40,21 @@ const Game = ({ user, gameId }) => {
 			if (gameDoc.gameState === 1) {
 				isResigned = gameDoc.players.length < 2;
 				isWinner = gameDoc.lives1 < 1 || gameDoc.lives2 < 1;
+			}
+		}
+		if (gameDoc.gameState === 1) {
+			if (playerNum === 0) {
+				hitsSelf = gameDoc.hits1;
+				missesSelf = gameDoc.misses1;
+
+				hits = gameDoc.hits2;
+				misses = gameDoc.misses2;
+			} else {
+				hitsSelf = gameDoc.hits2;
+				missesSelf = gameDoc.misses2;
+
+				hits = gameDoc.hits1;
+				misses = gameDoc.misses1;
 			}
 		}
 		gameOverMessage = gameDoc.gameOverMessage;
@@ -86,6 +100,10 @@ const Game = ({ user, gameId }) => {
 						playerNum={playerNum}
 						gameName={gameName}
 						isCurrent={isCurrent}
+						hits={hits}
+						misses={misses}
+						hitsSelf={hitsSelf}
+						missesSelf={missesSelf}
 					/>
 				</>
 			);

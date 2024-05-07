@@ -67,7 +67,6 @@ const ShipPlacement = ({ user, gameId, playerNum, gameName }) => {
 				setShipsLeft((prevShipsLeft) => {
 					return prevShipsLeft.slice(1);
 				});
-			else console.error("Failed to place ship on the grid.");
 		});
 	};
 

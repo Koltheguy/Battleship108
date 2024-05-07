@@ -362,38 +362,45 @@ const attack = async ({
 }) => {
 	if (!isCurrent || playerNum === -1) return -1;
 
+	for (let i = 0; i < hits.length; i += 2) {
+		if (
+			position[0] === Number(hits[i]) &&
+			position[1] === Number(hits[i + 1])
+		)
+			return -1;
+	}
+
+	for (let i = 0; i < misses.length; i += 2) {
+		if (
+			position[0] === Number(misses[i]) &&
+			position[1] === Number(misses[i + 1])
+		)
+			return -1;
+	}
+
 	const ships = await getShips({ gameId, playerNum });
 	const isHit = await checkHit({ hit: position, ships });
 	const coord = position.join("");
 
-	console.log({
-		isHit,
-		gameId,
-		position,
-		playerNum,
-		isCurrent,
-		hits,
-		misses,
-	});
+	const combinedHit = hits.concat(coord);
+	const combinedMiss = misses.concat(coord);
 
 	if (isHit) {
 		if (playerNum === 0)
 			await updateDoc(doc(db, "Game", gameId), {
 				turn: increment(1),
-				currentPlayer: 1,
 				lastMove: serverTimestamp(),
 
 				lives1: increment(-1),
-				hits1: hits.concat(coord),
+				hits1: combinedHit,
 			});
 		else
 			await updateDoc(doc(db, "Game", gameId), {
 				turn: increment(1),
-				currentPlayer: 0,
 				lastMove: serverTimestamp(),
 
 				lives2: increment(-1),
-				hits2: hits.concat(coord),
+				hits2: combinedHit,
 			});
 	} else {
 		if (playerNum === 0)
@@ -402,7 +409,7 @@ const attack = async ({
 				currentPlayer: 0,
 				lastMove: serverTimestamp(),
 
-				misses1: misses.concat(coord),
+				misses1: combinedMiss,
 			});
 		else
 			await updateDoc(doc(db, "Game", gameId), {
@@ -410,9 +417,10 @@ const attack = async ({
 				currentPlayer: 1,
 				lastMove: serverTimestamp(),
 
-				misses2: misses.concat(coord),
+				misses2: combinedMiss,
 			});
 	}
+	return 1;
 };
 
 //#endregion

@@ -11,12 +11,23 @@ const viewGridData = (views, className) => {
 	const gridData = {};
 	if (!views) return gridData;
 	for (let i = 0; i < views.length; i += 2) {
-		gridData[`${views[i * 2]}${views[i * 2 + 1]}`] = className;
+		gridData[`${views[i]}${views[i + 1]}`] = className;
 	}
 	return gridData;
 };
 
-const Gameplay = ({ user, gameId, playerNum, gameName, isCurrent }) => {
+const Gameplay = ({
+	user,
+	gameId,
+	playerNum,
+	gameName,
+	isCurrent,
+	hits,
+	misses,
+	hitsSelf,
+	missesSelf,
+}) => {
+	const [refresh, setRefresh] = useState(false);
 	const [gridDataOther, setGridDataOther] = useState({});
 	const [gridDataSelf, setGridDataSelf] = useState({});
 	const [gameDoc, isGameDocLoading] = useDocumentData(
@@ -29,32 +40,11 @@ const Gameplay = ({ user, gameId, playerNum, gameName, isCurrent }) => {
 		? gameDoc.ships1
 		: gameDoc.ships2;
 
-	const [hits, setHits] = useState("");
-	const [misses, setMisses] = useState("");
-	const [hitsSelf, setHitsSelf] = useState("");
-	const [missesSelf, setMissesSelf] = useState("");
-
-	useEffect(() => {
-		if (!isGameDocLoading) {
-			if (playerNum === 0) {
-				setHits(gameDoc.hits2);
-				setMisses(gameDoc.misses2);
-				setHitsSelf(gameDoc.hits1);
-				setMissesSelf(gameDoc.misses1);
-			} else {
-				setHits(gameDoc.hits1);
-				setMisses(gameDoc.misses1);
-				setHitsSelf(gameDoc.hits2);
-				setMissesSelf(gameDoc.misses2);
-			}
-		}
-	}, [playerNum, gameDoc, isGameDocLoading]);
-
 	useEffect(() => {
 		const hitGridData = viewGridData(hits, "hit");
 		const missesGridData = viewGridData(misses, "miss");
 		setGridDataOther({ ...hitGridData, ...missesGridData });
-	}, [hits, misses]);
+	}, [setGridDataOther, hits, misses]);
 
 	useEffect(() => {
 		//own ships
@@ -74,7 +64,7 @@ const Gameplay = ({ user, gameId, playerNum, gameName, isCurrent }) => {
 		const missesGridData = viewGridData(missesSelf, "miss");
 
 		setGridDataSelf({ ...shipGridData, ...hitGridData, ...missesGridData });
-	}, [shipString, hitsSelf, missesSelf]);
+	}, [shipString, setGridDataSelf, hitsSelf, missesSelf]);
 
 	const handleCellClick = (position) => {
 		if (!isCurrent) return;
@@ -86,6 +76,8 @@ const Gameplay = ({ user, gameId, playerNum, gameName, isCurrent }) => {
 			isCurrent,
 			hits,
 			misses,
+		}).then(() => {
+			setRefresh(!refresh); //force update
 		});
 	};
 
@@ -105,7 +97,7 @@ const Gameplay = ({ user, gameId, playerNum, gameName, isCurrent }) => {
 						user={user}
 						gameId={gameId}
 						isLose={true}
-						buttonText={"Forfeit"}
+						buttonText={"Forefeit"}
 					/>
 				</div>
 				<div style={{ flex: 1 }}>
