@@ -58,7 +58,7 @@ const Game = ({ user, gameId }) => {
 		const winner = gameDoc.lives1 < 1 ? 1 : 0;
 		endGame({
 			gameId,
-			gameOverMessage: `Player ${winner} Wins!`,
+			gameOverMessage: `Player ${winner + 1} Wins!`,
 			winner,
 			players: gameDoc.players,
 		});

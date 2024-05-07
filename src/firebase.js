@@ -273,7 +273,6 @@ const placeShip = async ({ user, gameId, shipType, position, orientation }) => {
 	if (orientation !== "horizontal" && orientation !== "vertical") return -1;
 	if (position[0] < 0 || position[1] < 0) return -1;
 	const shipSize = SHIP_TYPES[shipType];
-	console.log(position);
 	if (orientation === "horizontal") {
 		if (position[0] + shipSize > GRID_SIZE) return -1;
 	} else {
@@ -363,19 +362,56 @@ const attack = async ({
 }) => {
 	if (!isCurrent || playerNum === -1) return -1;
 
-	const ships = getShips({ gameId, playerNum });
-	const isHit = checkHit({ hit: position, ships });
+	const ships = await getShips({ gameId, playerNum });
+	const isHit = await checkHit({ hit: position, ships });
 	const coord = position.join("");
 
-	if (isHit) {
-		await updateDoc(doc(db, "Game", gameId), {
-			turn: increment(1),
-			currentPlayer: isHit ? 0 : 1,
-			lastMove: serverTimestamp(),
+	console.log({
+		isHit,
+		gameId,
+		position,
+		playerNum,
+		isCurrent,
+		hits,
+		misses,
+	});
 
-			lives2: increment(-1),
-			visible2: coord,
-		});
+	if (isHit) {
+		if (playerNum === 0)
+			await updateDoc(doc(db, "Game", gameId), {
+				turn: increment(1),
+				currentPlayer: 1,
+				lastMove: serverTimestamp(),
+
+				lives1: increment(-1),
+				hits1: hits.concat(coord),
+			});
+		else
+			await updateDoc(doc(db, "Game", gameId), {
+				turn: increment(1),
+				currentPlayer: 0,
+				lastMove: serverTimestamp(),
+
+				lives2: increment(-1),
+				hits2: hits.concat(coord),
+			});
+	} else {
+		if (playerNum === 0)
+			await updateDoc(doc(db, "Game", gameId), {
+				turn: increment(1),
+				currentPlayer: 0,
+				lastMove: serverTimestamp(),
+
+				misses1: misses.concat(coord),
+			});
+		else
+			await updateDoc(doc(db, "Game", gameId), {
+				turn: increment(1),
+				currentPlayer: 1,
+				lastMove: serverTimestamp(),
+
+				misses2: misses.concat(coord),
+			});
 	}
 };
 

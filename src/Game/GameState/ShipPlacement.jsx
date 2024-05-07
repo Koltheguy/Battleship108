@@ -72,7 +72,6 @@ const ShipPlacement = ({ user, gameId, playerNum, gameName }) => {
 	};
 
 	let shipName = null;
-	console.log(playerNum === 0 ? "1" + ready.at(1) : ready.at(0) + 1);
 	if (shipsLeft.length > 0) {
 		shipName = shipTypes[shipsLeft[0]];
 		shipName = shipName.charAt(0).toUpperCase() + shipName.slice(1);
